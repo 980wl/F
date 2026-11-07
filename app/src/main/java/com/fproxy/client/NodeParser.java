@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
@@ -43,7 +44,7 @@ public final class NodeParser {
         }
     }
 
-    static void enableRealityUtls(JSONObject tls) throws Exception {
+    static void enableRealityUtls(JSONObject tls) throws JSONException {
         JSONObject utls = tls.optJSONObject("utls");
         if (utls == null) {
             utls = new JSONObject();
