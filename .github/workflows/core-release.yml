@@ -25,7 +25,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Find an unpublished stable core
+      - name: Find an unpublished app or stable core
         id: plan
         env:
           GH_TOKEN: ${{ github.token }}
@@ -108,17 +108,18 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           LIBBOX_SHA256: ${{ needs.build.outputs.libbox_sha256 }}
         run: |
-          tag="f-core-$CORE"
+          app_version=$(cat release/version-name.txt)
+          tag="f-core-$CORE-app-$app_version"
           python3 tools/release_manifest.py \
             --apk release/F-SingBox.apk \
             --apk-url "https://github.com/$GITHUB_REPOSITORY/releases/download/$tag/F-SingBox.apk" \
             --core-version "$CORE" --version-code "$VERSION_CODE" \
-            --version "$(cat release/version-name.txt)" --output release/f-updates.json
+            --version "$app_version" --output release/f-updates.json
           if gh release view "$tag" --json isDraft --jq .isDraft > release/draft.txt; then
             [[ "$(cat release/draft.txt)" == true ]]
           else
             gh release create "$tag" --draft --target "$GITHUB_SHA" \
-              --title "F · sing-box $CORE" \
+              --title "F $app_version · sing-box $CORE" \
               --notes "Android libbox $CORE (SHA-256: $LIBBOX_SHA256)."
           fi
           gh release upload "$tag" release/F-SingBox.apk release/f-updates.json --clobber
