@@ -126,3 +126,16 @@ jobs:
           gh release edit "$tag" --target "$GITHUB_SHA" --draft=false --latest
           printf '更新清单 https://github.com/%s/releases/latest/download/f-updates.json\n' \
             "$GITHUB_REPOSITORY" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Keep only the latest release APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="f-core-$CORE-app-$(cat release/version-name.txt)"
+          for old in $(gh release list --limit 100 --json tagName --jq '.[].tagName'); do
+            if [ "$old" = "$tag" ]; then continue; fi
+            if gh release view "$old" --json assets --jq -e '.assets[] | select(.name=="F-SingBox.apk")' >/dev/null; then
+              gh release delete-asset "$old" F-SingBox.apk --yes
+              echo "Removed F-SingBox.apk from $old"
+            fi
+          done
