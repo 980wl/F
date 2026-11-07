@@ -59,7 +59,7 @@ jobs:
         if: steps.plan.outputs.core != ''
         with:
           name: f-unsigned-apk
-          path: app/build/outputs/apk/release/app-release-universal-unsigned.apk
+          path: app/build/outputs/apk/release/app-universal-release-unsigned.apk
           if-no-files-found: error
           retention-days: 1
 
@@ -100,7 +100,7 @@ jobs:
           fi
           "$bt/apksigner" sign --ks "$keystore" --ks-key-alias "$F_KEY_ALIAS" \
             --ks-pass env:F_STORE_PASSWORD --key-pass env:F_KEY_PASSWORD \
-            --out release/F-SingBox.apk release/app-release-universal-unsigned.apk
+            --out release/F-SingBox.apk release/app-universal-release-unsigned.apk
           export ANDROID_BUILD_TOOLS="$bt"
           bash tools/verify_core_apk.sh release/F-SingBox.apk "$CORE" "$VERSION_CODE"
       - name: Publish the APK and update manifest together
