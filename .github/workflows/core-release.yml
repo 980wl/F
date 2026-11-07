@@ -59,7 +59,7 @@ jobs:
         if: steps.plan.outputs.core != ''
         with:
           name: f-unsigned-apk
-          path: app/build/outputs/apk/release/app-release-unsigned.apk
+          path: app/build/outputs/apk/release/app-release-universal-unsigned.apk
           if-no-files-found: error
           retention-days: 1
 
@@ -100,7 +100,7 @@ jobs:
           fi
           "$bt/apksigner" sign --ks "$keystore" --ks-key-alias "$F_KEY_ALIAS" \
             --ks-pass env:F_STORE_PASSWORD --key-pass env:F_KEY_PASSWORD \
-            --out release/F-SingBox.apk release/app-release-unsigned.apk
+            --out release/F-SingBox.apk release/app-release-universal-unsigned.apk
           export ANDROID_BUILD_TOOLS="$bt"
           bash tools/verify_core_apk.sh release/F-SingBox.apk "$CORE" "$VERSION_CODE"
       - name: Publish the APK and update manifest together
@@ -131,9 +131,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          tag="f-core-$CORE-app-$(cat release/version-name.txt)"
+          n=0
           for old in $(gh release list --limit 100 --json tagName --jq '.[].tagName'); do
-            if [ "$old" = "$tag" ]; then continue; fi
+            n=$((n + 1)); if [ "$n" -le 3 ]; then continue; fi
             if gh release view "$old" --json assets --jq -e '.assets[] | select(.name=="F-SingBox.apk")' >/dev/null; then
               gh release delete-asset "$old" F-SingBox.apk --yes
               echo "Removed F-SingBox.apk from $old"
