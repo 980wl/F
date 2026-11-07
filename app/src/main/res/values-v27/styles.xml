@@ -1,0 +1,4 @@
+<resources><style name="FTheme" parent="FThemeBase">
+<item name="android:navigationBarColor">#FFFFFF</item>
+<item name="android:windowLightNavigationBar">true</item>
+</style></resources>
