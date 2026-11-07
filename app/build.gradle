@@ -40,7 +40,7 @@ android {
         minSdk 26
         targetSdk 35
         versionCode providers.gradleProperty('fAppVersionCode').get().toInteger()
-        versionName '0.5.0'
+        versionName providers.gradleProperty('fAppVersionName').get()
         manifestPlaceholders = [coreVersion: coreVersion]
         buildConfigField 'String', 'CORE_VERSION', '"' + coreVersion + '"'
         buildConfigField 'String', 'APP_UPDATE_MANIFEST', '"' + updateManifest + '"'
