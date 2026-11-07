@@ -1,0 +1,9 @@
+<resources>
+  <style name="FThemeBase" parent="android:style/Theme.Material.Light.NoActionBar">
+      <item name="android:fontFamily">sans</item>
+      <item name="android:statusBarColor">#B91922</item>
+      <item name="android:navigationBarColor">#222222</item>
+      <item name="android:colorAccent">#D3222A</item>
+  </style>
+  <style name="FTheme" parent="FThemeBase"/>
+</resources>
