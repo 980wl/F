@@ -1,84 +1,158 @@
 package com.fproxy.client;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.security.MessageDigest;
-import java.util.Locale;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.Locale;
 
-/** Bounded HTTPS downloads, no HTTP downgrade and no unlimited-memory responses. */
 public final class NetFetch {
-    private NetFetch(){}
-    public static byte[] bytes(String address,int limit)throws Exception {
-        URL url=new URL(address);if(!"https".equalsIgnoreCase(url.getProtocol()))throw new IllegalArgumentException("仅支持 HTTPS");
-        for(int hops=0;hops<5;hops++){
-            HttpURLConnection c=(HttpURLConnection)url.openConnection();
-            c.setInstanceFollowRedirects(false);c.setConnectTimeout(12000);c.setReadTimeout(25000);
-            c.setRequestProperty("User-Agent","F-SingBox/0.1 (+https://github.com/SagerNet/sing-box)");
-            c.setRequestProperty("Accept","*/*");
-            try{
-                int status=c.getResponseCode();
-                if(status>=300&&status<400){
-                    String redirect=c.getHeaderField("Location");
-                    if(redirect==null)throw new IllegalArgumentException("重定向缺少 Location");
-                    URL next=new URL(url,redirect);
-                    if(!"https".equalsIgnoreCase(next.getProtocol()))throw new SecurityException("禁止降级到 HTTP");
-                    url=next;continue;
-                }
-                if(status!=200)throw new java.io.IOException("HTTP "+status+" ("+url.getHost()+")");
-                if(c.getContentLengthLong()>limit)throw new IllegalArgumentException("响应体过大");
-                ByteArrayOutputStream o=new ByteArrayOutputStream();
-                try(InputStream in=c.getInputStream()){
-                    byte[] b=new byte[8192];int n;
-                    while((n=in.read(b))!=-1){if(o.size()+n>limit)throw new IllegalArgumentException("文件超过大小限制");o.write(b,0,n);}
-                }
-                return o.toByteArray();
-            }finally{c.disconnect();}
+    // 使用通用移动端浏览器 User-Agent，消除固定 "F-SingBox/0.1" 客户端网络指纹
+    private static final String DEFAULT_USER_AGENT =
+            "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Mobile Safari/537.36";
+
+    private NetFetch() {
+    }
+
+    public static byte[] bytes(String urlStr, int maxBytes) throws Exception {
+        URL url = new URL(urlStr);
+        if (!"https".equalsIgnoreCase(url.getProtocol())) {
+            throw new IllegalArgumentException("仅支持 HTTPS");
         }
-        throw new java.io.IOException("HTTPS 重定向次数过多");
-    }
-    /** Stream large APKs to disk (never buffer the whole download in RAM). */
-    public static void downloadTo(String address,File target,long maxSize,String sha256)throws Exception{
-        URL url=new URL(address);
-        if(!"https".equalsIgnoreCase(url.getProtocol()))throw new SecurityException("仅允许 HTTPS APK");
-        target.getParentFile().mkdirs();
-        try{
-            for(int hops=0;hops<5;hops++){
-                HttpURLConnection c=(HttpURLConnection)url.openConnection();
-                c.setInstanceFollowRedirects(false);c.setConnectTimeout(15000);c.setReadTimeout(35000);
-                c.setRequestProperty("User-Agent","F-SingBox/0.1");
-                try{
-                    int status=c.getResponseCode();
-                    if(status>=300&&status<400){
-                        String location=c.getHeaderField("Location");
-                        if(location==null)throw new java.io.IOException("无重定向地址");
-                        URL next=new URL(url,location);
-                        if(!"https".equalsIgnoreCase(next.getProtocol()))throw new SecurityException("拒绝降级至 HTTP");
-                        url=next;continue;
+        for (int redirects = 0; redirects < 5; redirects++) {
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            try {
+                conn.setInstanceFollowRedirects(false);
+                conn.setConnectTimeout(12000);
+                conn.setReadTimeout(25000);
+                conn.setRequestProperty("User-Agent", DEFAULT_USER_AGENT);
+                conn.setRequestProperty("Accept", "*/*");
+
+                int code = conn.getResponseCode();
+                if (code >= 300 && code < 400) {
+                    String location = conn.getHeaderField("Location");
+                    if (location == null) {
+                        throw new IllegalArgumentException("重定向缺少 Location");
                     }
-                    if(status!=200)throw new java.io.IOException("APK 下载 HTTP "+status);
-                    if(c.getContentLengthLong()>maxSize)throw new java.io.IOException("APK 文件过大");
-                    MessageDigest digest=MessageDigest.getInstance("SHA-256");
-                    long total=0;
-                    try(InputStream in=c.getInputStream();FileOutputStream out=new FileOutputStream(target)){
-                        byte[] buffer=new byte[16384];int n;
-                        while((n=in.read(buffer))!=-1){
-                            total+=n;if(total>maxSize)throw new java.io.IOException("下载超过大小限制");
-                            out.write(buffer,0,n);digest.update(buffer,0,n);
+                    URL nextUrl = new URL(url, location);
+                    if (!"https".equalsIgnoreCase(nextUrl.getProtocol())) {
+                        throw new SecurityException("禁止降级到 HTTP");
+                    }
+                    url = nextUrl;
+                    continue;
+                }
+
+                if (code != 200) {
+                    throw new IOException("HTTP " + code + " (" + url.getHost() + ")");
+                }
+
+                long contentLength = conn.getContentLengthLong();
+                if (contentLength > (long) maxBytes) {
+                    throw new IllegalArgumentException("响应体过大");
+                }
+
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                try (InputStream in = conn.getInputStream()) {
+                    byte[] buffer = new byte[8192];
+                    int read;
+                    while ((read = in.read(buffer)) != -1) {
+                        if (out.size() + read > maxBytes) {
+                            throw new IllegalArgumentException("文件超过大小限制");
                         }
-                        out.flush();out.getFD().sync();
+                        out.write(buffer, 0, read);
                     }
-                    StringBuilder hex=new StringBuilder();for(byte b:digest.digest())hex.append(String.format(Locale.US,"%02x",b&255));
-                    if(!hex.toString().equalsIgnoreCase(sha256))throw new SecurityException("APK SHA-256 不符");
-                    return;
-                }finally{c.disconnect();}
+                }
+                return out.toByteArray();
+            } finally {
+                conn.disconnect();
             }
-            throw new java.io.IOException("HTTPS 重定向过多");
-        }catch(Exception e){target.delete();throw e;}
+        }
+        throw new IOException("HTTPS 重定向次数过多");
     }
-    public static String text(String url,int bytes)throws Exception{return new String(bytes(url,bytes),StandardCharsets.UTF_8);}
+
+    public static void downloadTo(String urlStr, File target, long maxBytes, String expectedSha256) throws Exception {
+        URL url = new URL(urlStr);
+        if (!"https".equalsIgnoreCase(url.getProtocol())) {
+            throw new SecurityException("仅允许 HTTPS APK");
+        }
+        File parent = target.getParentFile();
+        if (parent != null) {
+            parent.mkdirs();
+        }
+        try {
+            for (int redirects = 0; redirects < 5; redirects++) {
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                try {
+                    conn.setInstanceFollowRedirects(false);
+                    conn.setConnectTimeout(15000);
+                    conn.setReadTimeout(35000);
+                    conn.setRequestProperty("User-Agent", DEFAULT_USER_AGENT);
+
+                    int code = conn.getResponseCode();
+                    if (code >= 300 && code < 400) {
+                        String location = conn.getHeaderField("Location");
+                        if (location == null) {
+                            throw new IOException("无重定向地址");
+                        }
+                        URL nextUrl = new URL(url, location);
+                        if (!"https".equalsIgnoreCase(nextUrl.getProtocol())) {
+                            throw new SecurityException("拒绝降级至 HTTP");
+                        }
+                        url = nextUrl;
+                        continue;
+                    }
+
+                    if (code != 200) {
+                        throw new IOException("APK 下载 HTTP " + code);
+                    }
+
+                    if (conn.getContentLengthLong() > maxBytes) {
+                        throw new IOException("APK 文件过大");
+                    }
+
+                    MessageDigest digest = MessageDigest.getInstance("SHA-256");
+                    try (InputStream in = conn.getInputStream();
+                         FileOutputStream out = new FileOutputStream(target)) {
+                        byte[] buffer = new byte[16384];
+                        long total = 0L;
+                        int read;
+                        while ((read = in.read(buffer)) != -1) {
+                            total += read;
+                            if (total > maxBytes) {
+                                throw new IOException("下载超过大小限制");
+                            }
+                            out.write(buffer, 0, read);
+                            digest.update(buffer, 0, read);
+                        }
+                        out.flush();
+                        out.getFD().sync();
+                    }
+
+                    StringBuilder hex = new StringBuilder();
+                    for (byte b : digest.digest()) {
+                        hex.append(String.format(Locale.US, "%02x", b & 0xff));
+                    }
+                    if (!hex.toString().equalsIgnoreCase(expectedSha256)) {
+                        throw new SecurityException("APK SHA-256 不符");
+                    }
+                    return;
+                } finally {
+                    conn.disconnect();
+                }
+            }
+            throw new IOException("HTTPS 重定向过多");
+        } catch (Exception e) {
+            target.delete();
+            throw e;
+        }
+    }
+
+    public static String text(String urlStr, int maxBytes) throws Exception {
+        return new String(bytes(urlStr, maxBytes), StandardCharsets.UTF_8);
+    }
 }

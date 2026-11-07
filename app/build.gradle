@@ -27,7 +27,10 @@ android {
     buildTypes {
         release {
             if (signingFile.exists()) signingConfig signingConfigs.release
-            minifyEnabled false
+            // 0.5.3: R8 代码缩减 + 资源压缩；正式版 Log.d/Log.v 由 proguard-rules.pro 剥离
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             ndk { abiFilters 'arm64-v8a', 'armeabi-v7a' }
         }
     }
@@ -48,7 +51,26 @@ android {
     }
     buildFeatures { buildConfig true }
     compileOptions { coreLibraryDesugaringEnabled true; sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
-    packaging { jniLibs { useLegacyPackaging true } }
+    // 0.5.3: 按 ABI 分包 + 禁止安装时解压 .so（直接从 APK 映射加载，省约 81MB 存储）
+    // 注意：单文件发布走 universal APK；分包只减小各 ABI 包体积，不减小 universal 包的下载体积
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'arm64-v8a', 'armeabi-v7a'
+            universalApk true
+        }
+    }
+    packaging {
+        jniLibs { useLegacyPackaging false }
+        resources {
+            excludes += [
+                'DebugProbesKt.bin',
+                'META-INF/*.kotlin_module',
+                'META-INF/version-control-info.textproto'
+            ]
+        }
+    }
 }
 
 def prepareLibbox = tasks.register('prepareLibbox') {

@@ -1,19 +1,41 @@
 package com.fproxy.client;
-import android.app.*;
+
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.content.pm.ServiceInfo;
-public final class FNotification {
-    public static void show(Service s,int id,String message){
-        String channel="f-vpn-active";
-        NotificationManager nm=(NotificationManager)s.getSystemService(Service.NOTIFICATION_SERVICE);
-        nm.createNotificationChannel(new NotificationChannel(channel,"F 连接与测速",NotificationManager.IMPORTANCE_LOW));
-        PendingIntent ui=PendingIntent.getActivity(s,id,new Intent(s,MainActivity.class),PendingIntent.FLAG_IMMUTABLE|PendingIntent.FLAG_UPDATE_CURRENT);
-        PendingIntent stop=PendingIntent.getService(s,id,new Intent(s,s.getClass()).setAction("STOP"),PendingIntent.FLAG_IMMUTABLE|PendingIntent.FLAG_UPDATE_CURRENT);
-        Notification n=new Notification.Builder(s,channel).setContentTitle("F · sing-box")
-            .setContentText(message).setSmallIcon(R.drawable.ic_status).setContentIntent(ui).setOngoing(true)
-            .addAction(new Notification.Action.Builder(R.drawable.ic_status,"停止",stop).build()).build();
-        if(Build.VERSION.SDK_INT>=34)s.startForeground(id,n,ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
-        else s.startForeground(id,n);
+import android.os.Build;
+
+public class FNotification {
+    public static void show(Service service, int id, String text) {
+        NotificationManager nm = (NotificationManager) service.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationChannel channel = new NotificationChannel(
+                "f-vpn-active", "F 连接与测速", NotificationManager.IMPORTANCE_LOW);
+        nm.createNotificationChannel(channel);
+
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
+        PendingIntent contentIntent = PendingIntent.getActivity(
+                service, id, new Intent(service, MainActivity.class), flags);
+        PendingIntent stopIntent = PendingIntent.getService(
+                service, id, new Intent(service, service.getClass()).setAction("STOP"), flags);
+
+        Notification notification = new Notification.Builder(service, "f-vpn-active")
+                .setContentTitle("F · sing-box")
+                .setContentText(text)
+                .setSmallIcon(R.drawable.ic_status)
+                .setContentIntent(contentIntent)
+                .setOngoing(true)
+                .addAction(new Notification.Action.Builder(R.drawable.ic_status, "停止", stopIntent).build())
+                .build();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            service.startForeground(id, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
+        } else {
+            service.startForeground(id, notification);
+        }
     }
 }

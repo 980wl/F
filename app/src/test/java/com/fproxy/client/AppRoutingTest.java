@@ -39,4 +39,17 @@ public class AppRoutingTest {
         JSONObject root=new JSONObject(SingConfig.probe(NodeParser.fromUri("hy2://pass@127.0.0.1:443"),12345));
         assertEquals(0,root.getJSONObject("route").getJSONArray("rules").length());assertFalse(root.getJSONObject("route").has("rule_set"));
     }
+    @Test public void splitRulesWithGeositePreferDomainDirect()throws Exception{
+        JSONObject root=new JSONObject(SingConfig.mainlandSplit(NodeParser.fromUri("hy2://pass@127.0.0.1:443"),"/private/geoip-cn.srs","/private/geosite-cn.srs"));
+        JSONObject route=root.getJSONObject("route");JSONArray rules=route.getJSONArray("rules");
+        assertEquals("hijack-dns",rules.getJSONObject(0).getString("action"));
+        assertTrue(rules.getJSONObject(1).getBoolean("ip_is_private"));assertEquals("F-DIRECT",rules.getJSONObject(1).getString("outbound"));
+        assertEquals("geosite-cn",rules.getJSONObject(2).getJSONArray("rule_set").getString(0));assertEquals("F-DIRECT",rules.getJSONObject(2).getString("outbound"));
+        assertEquals("geoip-cn",rules.getJSONObject(3).getJSONArray("rule_set").getString(0));assertEquals("F-DIRECT",rules.getJSONObject(3).getString("outbound"));
+        assertEquals("geosite-cn",route.getJSONArray("rule_set").getJSONObject(1).getString("tag"));
+        JSONArray dnsRules=root.getJSONObject("dns").getJSONArray("rules");
+        assertEquals("geosite-cn",dnsRules.getJSONObject(0).getJSONArray("rule_set").getString(0));assertEquals("bootstrap",dnsRules.getJSONObject(0).getString("server"));
+        assertEquals("https",root.getJSONObject("dns").getJSONArray("servers").getJSONObject(1).getString("type"));
+        assertEquals("223.5.5.5",root.getJSONObject("dns").getJSONArray("servers").getJSONObject(1).getString("server"));
+    }
 }
