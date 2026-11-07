@@ -1,0 +1,87 @@
+plugins { id 'com.android.application' }
+
+def coreVersion = providers.gradleProperty('fCoreVersion').get()
+def libboxSha256 = providers.gradleProperty('fLibboxSha256').get()
+def updateManifest = providers.gradleProperty('fUpdateManifest').getOrElse('')
+if (!(coreVersion ==~ /[0-9]+\.[0-9]+\.[0-9]+/) || !(libboxSha256 ==~ /[a-f0-9]{64}/)) {
+    throw new GradleException('Invalid stable libbox version or SHA-256')
+}
+if (updateManifest && !(updateManifest ==~ /https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/releases\/latest\/download\/f-updates\.json/)) {
+    throw new GradleException('Invalid GitHub update manifest URL')
+}
+
+def signingFile = rootProject.file('signing.properties')
+def releaseKeys = new Properties()
+if (signingFile.exists()) releaseKeys.load(new FileInputStream(signingFile))
+android {
+    signingConfigs {
+        release {
+            if (signingFile.exists()) {
+                storeFile rootProject.file(releaseKeys['storeFile'])
+                storePassword releaseKeys['storePassword']
+                keyAlias releaseKeys['keyAlias']
+                keyPassword releaseKeys['keyPassword']
+            }
+        }
+    }
+    buildTypes {
+        release {
+            if (signingFile.exists()) signingConfig signingConfigs.release
+            minifyEnabled false
+            ndk { abiFilters 'arm64-v8a', 'armeabi-v7a' }
+        }
+    }
+    namespace 'com.fproxy.client'
+    compileSdk 35
+    buildToolsVersion "35.0.0"
+    defaultConfig {
+        applicationId 'com.fproxy.client'
+        testInstrumentationRunner 'com.fproxy.client.SmokeInstrumentation'
+        minSdk 26
+        targetSdk 35
+        versionCode providers.gradleProperty('fAppVersionCode').get().toInteger()
+        versionName '0.5.0'
+        manifestPlaceholders = [coreVersion: coreVersion]
+        buildConfigField 'String', 'CORE_VERSION', '"' + coreVersion + '"'
+        buildConfigField 'String', 'APP_UPDATE_MANIFEST', '"' + updateManifest + '"'
+        buildConfigField 'String', 'UPDATE_SIGNER_SHA256', '""'
+    }
+    buildFeatures { buildConfig true }
+    compileOptions { coreLibraryDesugaringEnabled true; sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+    packaging { jniLibs { useLegacyPackaging true } }
+}
+
+def prepareLibbox = tasks.register('prepareLibbox') {
+    def artifact = layout.projectDirectory.file('libs/libbox.aar').asFile
+    outputs.file(artifact)
+    outputs.upToDateWhen { false }
+    doLast {
+        if (!artifact.exists()) {
+            artifact.parentFile.mkdirs()
+            def temp = new File(artifact.path + '.tmp')
+            new URL("https://github.com/singbox-android/libbox/releases/download/${coreVersion}/libbox.aar").withInputStream { input ->
+                temp.withOutputStream { output -> output << input }
+            }
+            java.nio.file.Files.move(temp.toPath(), artifact.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+        }
+        def digest = java.security.MessageDigest.getInstance('SHA-256')
+        artifact.withInputStream { input ->
+            byte[] buffer = new byte[65536]
+            int count
+            while ((count = input.read(buffer)) != -1) digest.update(buffer, 0, count)
+        }
+        if (digest.digest().encodeHex().toString() != libboxSha256) {
+            throw new GradleException('libbox.aar SHA-256 mismatch; remove app/libs/libbox.aar and retry')
+        }
+    }
+}
+
+dependencies {
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.json:json:20240303'
+    // Native sing-box Android library. This project is not built from v2rayNG's Xray core.
+    implementation files('libs/libbox.aar').builtBy(prepareLibbox)
+    implementation 'org.yaml:snakeyaml:2.3'
+    implementation 'androidx.core:core:1.15.0'
+}
