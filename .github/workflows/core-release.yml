@@ -1,0 +1,126 @@
+name: F stable core release
+
+on:
+  schedule:
+    - cron: '17 3,15 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: f-stable-core-release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    outputs:
+      core: ${{ steps.plan.outputs.core }}
+      version_code: ${{ steps.plan.outputs.version_code }}
+      libbox_sha256: ${{ steps.plan.outputs.libbox_sha256 }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Find an unpublished stable core
+        id: plan
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/plan_core_release.py
+      - uses: actions/setup-java@v4
+        if: steps.plan.outputs.core != ''
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        if: steps.plan.outputs.core != ''
+      - uses: gradle/actions/setup-gradle@v4
+        if: steps.plan.outputs.core != ''
+        with:
+          cache-disabled: true
+      - name: Build and test the unsigned APK
+        if: steps.plan.outputs.core != ''
+        env:
+          CORE: ${{ steps.plan.outputs.core }}
+          LIBBOX_SHA256: ${{ steps.plan.outputs.libbox_sha256 }}
+          VERSION_CODE: ${{ steps.plan.outputs.version_code }}
+        run: |
+          sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleRelease testDebugUnitTest lintRelease \
+            "-PfCoreVersion=$CORE" "-PfLibboxSha256=$LIBBOX_SHA256" \
+            "-PfAppVersionCode=$VERSION_CODE" \
+            "-PfUpdateManifest=https://github.com/$GITHUB_REPOSITORY/releases/latest/download/f-updates.json"
+      - uses: actions/upload-artifact@v4
+        if: steps.plan.outputs.core != ''
+        with:
+          name: f-unsigned-apk
+          path: app/build/outputs/apk/release/app-release-unsigned.apk
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    needs: build
+    if: needs.build.outputs.core != ''
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    env:
+      CORE: ${{ needs.build.outputs.core }}
+      VERSION_CODE: ${{ needs.build.outputs.version_code }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: f-unsigned-apk
+          path: release
+      - name: Sign and verify with the original F certificate
+        env:
+          F_KEYSTORE_BASE64: ${{ secrets.F_KEYSTORE_BASE64 }}
+          F_STORE_PASSWORD: ${{ secrets.F_STORE_PASSWORD }}
+          F_KEY_ALIAS: ${{ secrets.F_KEY_ALIAS }}
+          F_KEY_PASSWORD: ${{ secrets.F_KEY_PASSWORD }}
+        run: |
+          : "${F_KEYSTORE_BASE64:?Configure the original F signing secrets}"
+          : "${F_STORE_PASSWORD:?}" "${F_KEY_ALIAS:?}" "${F_KEY_PASSWORD:?}"
+          umask 077
+          keystore=$(mktemp)
+          trap 'rm -f "$keystore"' EXIT
+          printf '%s' "$F_KEYSTORE_BASE64" | base64 --decode > "$keystore"
+          bt="$ANDROID_HOME/build-tools/35.0.0"
+          if [[ ! -x "$bt/apksigner" ]]; then
+            sdkmanager 'build-tools;35.0.0'
+          fi
+          "$bt/apksigner" sign --ks "$keystore" --ks-key-alias "$F_KEY_ALIAS" \
+            --ks-pass env:F_STORE_PASSWORD --key-pass env:F_KEY_PASSWORD \
+            --out release/F-SingBox.apk release/app-release-unsigned.apk
+          export ANDROID_BUILD_TOOLS="$bt"
+          bash tools/verify_core_apk.sh release/F-SingBox.apk "$CORE" "$VERSION_CODE"
+      - name: Publish the APK and update manifest together
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LIBBOX_SHA256: ${{ needs.build.outputs.libbox_sha256 }}
+        run: |
+          tag="f-core-$CORE"
+          python3 tools/release_manifest.py \
+            --apk release/F-SingBox.apk \
+            --apk-url "https://github.com/$GITHUB_REPOSITORY/releases/download/$tag/F-SingBox.apk" \
+            --core-version "$CORE" --version-code "$VERSION_CODE" \
+            --version "$(cat release/version-name.txt)" --output release/f-updates.json
+          if gh release view "$tag" --json isDraft --jq .isDraft > release/draft.txt; then
+            [[ "$(cat release/draft.txt)" == true ]]
+          else
+            gh release create "$tag" --draft --target "$GITHUB_SHA" \
+              --title "F · sing-box $CORE" \
+              --notes "Android libbox $CORE (SHA-256: $LIBBOX_SHA256)."
+          fi
+          gh release upload "$tag" release/F-SingBox.apk release/f-updates.json --clobber
+          gh release edit "$tag" --target "$GITHUB_SHA" --draft=false --latest
+          printf '更新清单 https://github.com/%s/releases/latest/download/f-updates.json\n' \
+            "$GITHUB_REPOSITORY" >> "$GITHUB_STEP_SUMMARY"
