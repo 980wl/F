@@ -1,1 +1,183 @@
-cGFja2FnZSBjb20uZnByb3h5LmNsaWVudDsKCmltcG9ydCBhbmRyb2lkLmNvbnRlbnQuQ29udGV4dDsKaW1wb3J0IGFuZHJvaWQuY29udGVudC5JbnRlbnQ7CmltcG9ydCBhbmRyb2lkLm5ldC5Vcmk7CmltcG9ydCBhbmRyb2lkLmNvbnRlbnQucG0uUGFja2FnZUluZm87CmltcG9ydCBhbmRyb2lkLmNvbnRlbnQucG0uUGFja2FnZU1hbmFnZXI7CmltcG9ydCBhbmRyb2lkLm9zLkJ1aWxkOwppbXBvcnQgYW5kcm9pZC5jb250ZW50LnBtLlNpZ25hdHVyZTsKaW1wb3J0IGFuZHJvaWR4LmNvcmUuY29udGVudC5GaWxlUHJvdmlkZXI7CmltcG9ydCBvcmcuanNvbi5KU09OQXJyYXk7CmltcG9ydCBvcmcuanNvbi5KU09OT2JqZWN0OwppbXBvcnQgamF2YS5pby5GaWxlOwppbXBvcnQgamF2YS5pby5GaWxlT3V0cHV0U3RyZWFtOwppbXBvcnQgamF2YS5uaW8uZmlsZS5GaWxlczsKaW1wb3J0IGphdmEubmlvLmZpbGUuU3RhbmRhcmRDb3B5T3B0aW9uOwppbXBvcnQgamF2YS5zZWN1cml0eS5NZXNzYWdlRGlnZXN0OwppbXBvcnQgamF2YS5zZWN1cml0eS5jZXJ0LkNlcnRpZmljYXRlOwppbXBvcnQgamF2YS5zZWN1cml0eS5jZXJ0LkNlcnRpZmljYXRlRmFjdG9yeTsKaW1wb3J0IGphdmEudXRpbC5BcnJheUxpc3Q7CmltcG9ydCBqYXZhLnV0aWwuTGlzdDsKaW1wb3J0IGphdmEudXRpbC5Mb2NhbGU7CgovKiogT25lIHJlZnJlc2ggYnV0dG9uIHJ1bnMgc3Vic2NyaXB0aW9ucywgY29tcGF0aWJsZSBTUlMgcnVsZXMgYW5kIGEgc3RhYmxlLW9ubHkgY29yZSBjaGVjay4KICogbGliYm94IGlzIHBhY2thZ2VkIGFzIG5hdGl2ZSBjb2RlOyBUaGlzIGFwcGxpY2F0aW9uIHVwZGF0ZXMgaXRzIGJ1bmRsZWQgY29yZSB0aHJvdWdoIGEgTkVXIEFQSyBzaWduZWQgd2l0aCB0aGUKICogU0FNRSBzaWduaW5nIGNlcnRpZmljYXRlOyBpdCBkb2VzIG5vdCBpbXBsZW1lbnQgbmF0aXZlIGxpYnJhcnkgaG90IHN3YXBwaW5nLgogKi8KcHVibGljIGZpbmFsIGNsYXNzIFVwZGF0ZU1hbmFnZXIgewogICAgcHVibGljIHN0YXRpYyBmaW5hbCBTdHJpbmcgUkVMRUFTRVM9Imh0dHBzOi8vYXBpLmdpdGh1Yi5jb20vcmVwb3MvU2FnZXJOZXQvc2luZy1ib3gvcmVsZWFzZXMvbGF0ZXN0IjsKICAgIHB1YmxpYyBzdGF0aWMgU3RyaW5nIHVwZGF0ZVNvdXJjZShDb250ZXh0IGMpe3JldHVybiBjLmdldFNoYXJlZFByZWZlcmVuY2VzKCJ1cGRhdGVzIixDb250ZXh0Lk1PREVfUFJJVkFURSkuZ2V0U3RyaW5nKCJtYW5pZmVzdCIsQnVpbGRDb25maWcuQVBQX1VQREFURV9NQU5JRkVTVCk7fQogICAgcHVibGljIHN0YXRpYyBmaW5hbCBTdHJpbmdbXSBSVUxFX05BTUVTPXsiZ2VvaXAtY24uc3JzIiwiZ2Vvc2l0ZS1jbi5zcnMifTsKICAgIHB1YmxpYyBzdGF0aWMgZmluYWwgU3RyaW5nW10gUlVMRV9VUkxTPXsKICAgICAgICAiaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL1NhZ2VyTmV0L3NpbmctZ2VvaXAvcnVsZS1zZXQvZ2VvaXAtY24uc3JzIiwKICAgICAgICAiaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL1NhZ2VyTmV0L3NpbmctZ2Vvc2l0ZS9ydWxlLXNldC9nZW9zaXRlLWNuLnNycyIKICAgIH07CiAgICBwcml2YXRlIFVwZGF0ZU1hbmFnZXIoKSB7fQogICAgcHVibGljIGludGVyZmFjZSBQcm9ncmVzcyB7dm9pZCBzdGVwKFN0cmluZyBpbmZvKTt9CiAgICBwdWJsaWMgc3RhdGljIGZpbmFsIGNsYXNzIFJlc3VsdCB7CiAgICAgICAgcHVibGljIGZpbmFsIExpc3Q8U3RyaW5nPiByZXBvcnQ9bmV3IEFycmF5TGlzdDw+KCk7CiAgICAgICAgcHVibGljIFN0cmluZyBvZmZpY2lhbFN0YWJsZVZlcnNpb249QnVpbGRDb25maWcuQ09SRV9WRVJTSU9OOwogICAgICAgIHB1YmxpYyBKU09OT2JqZWN0IGFwcFJlbGVhc2U7CiAgICAgICAgcHVibGljIFN0cmluZyBhc1RleHQoKXtTdHJpbmdCdWlsZGVyIHNiPW5ldyBTdHJpbmdCdWlsZGVyKCk7Zm9yKFN0cmluZyBzOnJlcG9ydClzYi5hcHBlbmQocykuYXBwZW5kKCdcbicpO3JldHVybiBzYi50b1N0cmluZygpLnRyaW0oKTt9CiAgICB9CiAgICBwdWJsaWMgc3RhdGljIFJlc3VsdCB1cGRhdGVBbGwoQ29udGV4dCBjb250ZXh0LE5vZGVTdG9yZSBzdG9yZSxQcm9ncmVzcyBwKSB7CiAgICAgICAgUmVzdWx0IHI9bmV3IFJlc3VsdCgpOwogICAgICAgIHRyeSB7CiAgICAgICAgICAgIEpTT05BcnJheSBzdWJzY3JpcHRpb25zPXN0b3JlLnN1YnNjcmlwdGlvbnMoKTsKICAgICAgICAgICAgaW50IG9rPTAsZmFpbGVkPTA7CiAgICAgICAgICAgIGZvcihpbnQgaT0wO2k8c3Vic2NyaXB0aW9ucy5sZW5ndGgoKTtpKyspewogICAgICAgICAgICAgICAgSlNPTk9iamVjdCBzPXN1YnNjcmlwdGlvbnMuZ2V0SlNPTk9iamVjdChpKTsKICAgICAgICAgICAgICAgIFN0cmluZyBuYW1lPXMub3B0U3RyaW5nKCJuYW1lIiwi6K6i6ZiFIik7cC5zdGVwKCLmm7TmlrDorqLpmIXvvJoiK25hbWUpOwogICAgICAgICAgICAgICAgdHJ5IHsKICAgICAgICAgICAgICAgICAgICBzdG9yZS5yZXBsYWNlU3Vic2NyaXB0aW9uKHMuZ2V0U3RyaW5nKCJpZCIpLE5ldEZldGNoLnRleHQocy5nZXRTdHJpbmcoInVybCIpLDJfMDAwXzAwMCkpOwogICAgICAgICAgICAgICAgICAgIG9rKys7CiAgICAgICAgICAgICAgICB9IGNhdGNoKEV4Y2VwdGlvbiBlKXtmYWlsZWQrKztyLnJlcG9ydC5hZGQoIuiuoumYheOAjCIrbmFtZSsi44CN5pu05paw5aSx6LSl77yM5bey5L+d55WZ5pen6IqC54K577yaIitzYWZlKGUpKTt9CiAgICAgICAgICAgIH0KICAgICAgICAgICAgci5yZXBvcnQuYWRkKCLorqLpmIXvvJrmiJDlip8gIitvaysi77yM5aSx6LSlICIrZmFpbGVkKTsKICAgICAgICB9IGNhdGNoKEV4Y2VwdGlvbiBlKXtyLnJlcG9ydC5hZGQoIuivu+WPluiuoumYheWksei0pe+8miIrc2FmZShlKSk7fQogICAgICAgIEZpbGUgcnVsZURpcj1uZXcgRmlsZShjb250ZXh0LmdldEZpbGVzRGlyKCksInJ1bGVzIik7cnVsZURpci5ta2RpcnMoKTsKICAgICAgICBpbnQgZ2VvT2s9MDsKICAgICAgICBmb3IoaW50IGk9MDtpPFJVTEVfTkFNRVMubGVuZ3RoO2krKyl7CiAgICAgICAgICAgIFN0cmluZyBuYW1lPVJVTEVfTkFNRVNbaV07cC5zdGVwKCLmm7TmlrAgR2VvIOinhOWIme+8miIrbmFtZSk7CiAgICAgICAgICAgIHRyeSB7CiAgICAgICAgICAgICAgICBieXRlW10gYm9keT1OZXRGZXRjaC5ieXRlcyhSVUxFX1VSTFNbaV0sMTBfMDAwXzAwMCk7CiAgICAgICAgICAgICAgICBpZihib2R5Lmxlbmd0aDw4IHx8IGJvZHlbMF0hPSdTJ3x8Ym9keVsxXSE9J1InfHxib2R5WzJdIT0nUycpCiAgICAgICAgICAgICAgICAgICAgdGhyb3cgbmV3IGphdmEuaW8uSU9FeGNlcHRpb24oIuinhOWImembhuetvuWQjeWktOS4jeaYryBTUlMiKTsKICAgICAgICAgICAgICAgIEZpbGUgdG1wPW5ldyBGaWxlKHJ1bGVEaXIsbmFtZSsiLnRtcCIpO0ZpbGUgdGFyZ2V0PW5ldyBGaWxlKHJ1bGVEaXIsbmFtZSk7CiAgICAgICAgICAgICAgICB0cnkoRmlsZU91dHB1dFN0cmVhbSBvdXQ9bmV3IEZpbGVPdXRwdXRTdHJlYW0odG1wKSkge291dC53cml0ZShib2R5KTtvdXQuZmx1c2goKTtvdXQuZ2V0RkQoKS5zeW5jKCk7fQogICAgICAgICAgICAgICAgdHJ5IHtGaWxlcy5tb3ZlKHRtcC50b1BhdGgoKSx0YXJnZXQudG9QYXRoKCksU3RhbmRhcmRDb3B5T3B0aW9uLlJFUExBQ0VfRVhJU1RJTkcsU3RhbmRhcmRDb3B5T3B0aW9uLkFUT01JQ19NT1ZFKTt9CiAgICAgICAgICAgICAgICBjYXRjaChqYXZhLm5pby5maWxlLkF0b21pY01vdmVOb3RTdXBwb3J0ZWRFeGNlcHRpb24gZSl7RmlsZXMubW92ZSh0bXAudG9QYXRoKCksdGFyZ2V0LnRvUGF0aCgpLFN0YW5kYXJkQ29weU9wdGlvbi5SRVBMQUNFX0VYSVNUSU5HKTt9CiAgICAgICAgICAgICAgICBnZW9PaysrOwogICAgICAgICAgICB9Y2F0Y2goRXhjZXB0aW9uIGUpe3IucmVwb3J0LmFkZChuYW1lKyIg5pu05paw5aSx6LSl77yM5bey5L+d55WZ5Y6f5paH5Lu277yaIitzYWZlKGUpKTt9CiAgICAgICAgfQogICAgICAgIHIucmVwb3J0LmFkZCgiR2VvIC5zcnPvvJrmiJDlip8gIitnZW9PaysiLyIrUlVMRV9OQU1FUy5sZW5ndGgpOwogICAgICAgIHAuc3RlcCgi5pu05paw5Lit5Zu95aSn6ZmG5bqU55So5YyF5ZCN5riF5Y2VIik7CiAgICAgICAgdHJ5e2ludCBjb3VudD1BcHBEaXJlY3RQb2xpY3kudXBkYXRlKGNvbnRleHQpO3IucmVwb3J0LmFkZCgi5Zu95YaF5bqU55So5riF5Y2V77ya5bey5pu05pawICIrY291bnQrIiDmnaHvvIzph43ov57lkI7lupTnlKgiKTt9CiAgICAgICAgY2F0Y2goRXhjZXB0aW9uIGUpe3IucmVwb3J0LmFkZCgi5Zu95YaF5bqU55So5riF5Y2V5pu05paw5aSx6LSl77yM5L+d55WZ5YaF572uL+W3suacieinhOWIme+8miIrc2FmZShlKSk7fQogICAgICAgIHIucmVwb3J0LmFkZCgi5aSn6ZmGIElQIOS4juW6lOeUqOebtOi/nuinhOWImeWcqOS4i+asoei/nuaOpeaXtueUn+aViO+8m+a1j+iniOWZqOS4jeaVtOW6lOeUqOebtOi/nuOAgiIpOwogICAgICAgIHAuc3RlcCgi5qOA5p+lIHNpbmctYm94IOWumOaWueeos+WumueJiCIpOwogICAgICAgIHRyeSB7CiAgICAgICAgICAgIFN0cmluZyBsYXRlc3Q9bGF0ZXN0T2ZmaWNpYWxTdGFibGUoKTtyLm9mZmljaWFsU3RhYmxlVmVyc2lvbj1sYXRlc3Q7CiAgICAgICAgICAgIHIucmVwb3J0LmFkZCgi5a6Y5pa556iz5a6a5YaF5qC477yadiIrbGF0ZXN0KyLvvIjlvZPliY0gdiIrQnVpbGRDb25maWcuQ09SRV9WRVJTSU9OKyLvvIkiKTsKICAgICAgICB9Y2F0Y2goRXhjZXB0aW9uIGUpewogICAgICAgICAgICByLnJlcG9ydC5hZGQoIuajgOafpeWGheaguOeJiOacrOWksei0pe+8miIrc2FmZShlKSk7CiAgICAgICAgICAgIHJldHVybiByOwogICAgICAgIH0KICAgICAgICBTdHJpbmcgc291cmNlID0gdXBkYXRlU291cmNlKGNvbnRleHQpOwogICAgICAgIGlmIChzb3VyY2UuaXNCbGFuaygpKSB7CiAgICAgICAgICAgIHIucmVwb3J0LmFkZCgi6K+35Zyo6aG16Z2i5bqV6YOo5aGr5YaZ5ZCM562+5ZCNIEYg5pu05paw5riF5Y2V77yb5b2T5YmN5bCa5pyq6YWN572u5LiL6L295p2l5rqQ44CCIik7CiAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgcC5zdGVwKCLmo4Dmn6UgRiDlupTnlKjmm7TmlrAiKTsKICAgICAgICAgICAgdHJ5IHsKICAgICAgICAgICAgICAgIEpTT05PYmplY3QgcmVsZWFzZSA9IG5ldyBKU09OT2JqZWN0KE5ldEZldGNoLnRleHQoc291cmNlLCA4MF8wMDApKTsKICAgICAgICAgICAgICAgIGlmIChjYW5JbnN0YWxsUmVsZWFzZShyZWxlYXNlLCByLm9mZmljaWFsU3RhYmxlVmVyc2lvbiwgQnVpbGRDb25maWcuQ09SRV9WRVJTSU9OLCBCdWlsZENvbmZpZy5WRVJTSU9OX0NPREUpKSB7CiAgICAgICAgICAgICAgICAgICAgci5hcHBSZWxlYXNlID0gcmVsZWFzZTsKICAgICAgICAgICAgICAgICAgICByLnJlcG9ydC5hZGQoIkYg56iz5a6a54mI5pu05paw5YyF5bey5bCx57uq77yM6ZyA6KaB55So5oi356Gu6K6k5a6J6KOFIik7CiAgICAgICAgICAgICAgICB9IGVsc2UgewogICAgICAgICAgICAgICAgICAgIHIucmVwb3J0LmFkZCgi5rKh5pyJ5Y+v5a6J6KOF5LiU5Yy56YWN5a6Y5pa556iz5a6a54mI55qEIEYg5pu05paw5YyFIik7CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0gY2F0Y2ggKEV4Y2VwdGlvbiBlKSB7CiAgICAgICAgICAgICAgICByLnJlcG9ydC5hZGQoIuajgOafpSBGIOW6lOeUqOabtOaWsOWksei0pe+8miIrc2FmZShlKSk7CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICAgICAgcmV0dXJuIHI7CiAgICB9CiAgICBzdGF0aWMgYm9vbGVhbiBjYW5JbnN0YWxsUmVsZWFzZShKU09OT2JqZWN0IHJlbGVhc2UsIFN0cmluZyBsYXRlc3RTdGFibGUsIFN0cmluZyBpbnN0YWxsZWRDb3JlLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaW50IGluc3RhbGxlZFZlcnNpb25Db2RlKSB0aHJvd3MgRXhjZXB0aW9uIHsKICAgICAgICBTdHJpbmcgcmVsZWFzZUNvcmUgPSByZWxlYXNlLmdldFN0cmluZygiY29yZV92ZXJzaW9uIik7CiAgICAgICAgaWYgKCFyZWxlYXNlQ29yZS5tYXRjaGVzKCJbMC05XStcXC5bMC05XStcXC5bMC05XSsiKSkgewogICAgICAgICAgICB0aHJvdyBuZXcgU2VjdXJpdHlFeGNlcHRpb24oIuabtOaWsOWMheS4jeaYr+ato+W8j+WGheaguOeJiOacrCIpOwogICAgICAgIH0KICAgICAgICByZXR1cm4gY29tcGFyZVZlcnNpb24ocmVsZWFzZUNvcmUsIGluc3RhbGxlZENvcmUpID49IDAKICAgICAgICAgICAgICAgICYmIGNvbXBhcmVWZXJzaW9uKHJlbGVhc2VDb3JlLCBsYXRlc3RTdGFibGUpIDw9IDAKICAgICAgICAgICAgICAgICYmIHJlbGVhc2UuZ2V0SW50KCJ2ZXJzaW9uX2NvZGUiKSA+IGluc3RhbGxlZFZlcnNpb25Db2RlCiAgICAgICAgICAgICAgICAmJiByZWxlYXNlLmdldFN0cmluZygiYXBrX3VybCIpLnN0YXJ0c1dpdGgoImh0dHBzOi8vIikKICAgICAgICAgICAgICAgICYmIHJlbGVhc2UuZ2V0U3RyaW5nKCJzaGEyNTYiKS5tYXRjaGVzKCIoP2kpW2EtZjAtOV17NjR9Iik7CiAgICB9CgogICAgcHVibGljIHN0YXRpYyBTdHJpbmcgbGF0ZXN0T2ZmaWNpYWxTdGFibGUoKSB0aHJvd3MgRXhjZXB0aW9uIHsKICAgICAgICBKU09OQXJyYXkgcmVsZWFzZXM9bmV3IEpTT05BcnJheSgpLnB1dChuZXcgSlNPTk9iamVjdChOZXRGZXRjaC50ZXh0KFJFTEVBU0VTLDJfMDAwXzAwMCkpKTsKICAgICAgICBTdHJpbmcgbGF0ZXN0PW51bGw7CiAgICAgICAgZm9yKGludCBpPTA7aTxyZWxlYXNlcy5sZW5ndGgoKTtpKyspewogICAgICAgICAgICBKU09OT2JqZWN0IHJlbGVhc2U9cmVsZWFzZXMuZ2V0SlNPTk9iamVjdChpKTsKICAgICAgICAgICAgaWYocmVsZWFzZS5vcHRCb29sZWFuKCJkcmFmdCIsdHJ1ZSl8fHJlbGVhc2Uub3B0Qm9vbGVhbigicHJlcmVsZWFzZSIsdHJ1ZSkpY29udGludWU7CiAgICAgICAgICAgIFN0cmluZyB0YWc9cmVsZWFzZS5vcHRTdHJpbmcoInRhZ19uYW1lIik7CiAgICAgICAgICAgIGlmKCF0YWcubWF0Y2hlcygidlswLTldK1xcLlswLTldK1xcLlswLTldKyIpKWNvbnRpbnVlOyAvLyBubyBhbHBoYS9iZXRhL3JjL25pZ2h0bHkKICAgICAgICAgICAgU3RyaW5nIHZlcnNpb249dGFnLnN1YnN0cmluZygxKTsKICAgICAgICAgICAgaWYobGF0ZXN0PT1udWxsfHxjb21wYXJlVmVyc2lvbih2ZXJzaW9uLGxhdGVzdCk+MClsYXRlc3Q9dmVyc2lvbjsKICAgICAgICB9CiAgICAgICAgaWYobGF0ZXN0PT1udWxsKXRocm93IG5ldyBqYXZhLmlvLklPRXhjZXB0aW9uKCLlrpjmlrnniYjmnKzliJfooajkuK3msqHmnInnqLPlrprniYgiKTsKICAgICAgICByZXR1cm4gbGF0ZXN0OwogICAgfQogICAgcHVibGljIHN0YXRpYyBpbnQgY29tcGFyZVZlcnNpb24oU3RyaW5nIGEsU3RyaW5nIGIpewogICAgICAgIFN0cmluZ1tdIHg9YS5zcGxpdCgiXFwuIikseT1iLnNwbGl0KCJcXC4iKTsKICAgICAgICBmb3IoaW50IGk9MDtpPDM7aSsrKXtpbnQgdj1JbnRlZ2VyLnBhcnNlSW50KHhbaV0pLHc9SW50ZWdlci5wYXJzZUludCh5W2ldKTtpZih2IT13KXJldHVybiBJbnRlZ2VyLmNvbXBhcmUodix3KTt9CiAgICAgICAgcmV0dXJuIDA7CiAgICB9CiAgICAvKiogVmVyaWZpZXMgZG93bmxvYWRlZCBBUEsgaGFzaCBhbmQgU0FNRSBBUEsgc2lnbmVyIGJlZm9yZSBpbnZva2luZyBBbmRyb2lkJ3MgaW5zdGFsbGVyLiAqLwogICAgcHVibGljIHN0YXRpYyB2b2lkIGRvd25sb2FkQW5kSW5zdGFsbChDb250ZXh0IGMsSlNPTk9iamVjdCByZWxlYXNlLFByb2dyZXNzIHApdGhyb3dzIEV4Y2VwdGlvbiB7CiAgICAgICAgU3RyaW5nIGFkZHJlc3M9cmVsZWFzZS5nZXRTdHJpbmcoImFwa191cmwiKTsKICAgICAgICBpZighYWRkcmVzcy5zdGFydHNXaXRoKCJodHRwczovLyIpKXRocm93IG5ldyBTZWN1cml0eUV4Y2VwdGlvbigi5a6J6KOF5YyF5b+F6aG75pivIEhUVFBTIik7CiAgICAgICAgcC5zdGVwKCLkuIvovb3mlrDniYjmnKwgRiDlronoo4XljIUiKTsKICAgICAgICBGaWxlIGRpcj1uZXcgRmlsZShjLmdldENhY2hlRGlyKCksInVwZGF0ZXMiKTtkaXIubWtkaXJzKCk7RmlsZSB0YXJnZXQ9bmV3IEZpbGUoZGlyLCJGLXVwZGF0ZS5hcGsiKTsKICAgICAgICBOZXRGZXRjaC5kb3dubG9hZFRvKGFkZHJlc3MsdGFyZ2V0LDE2MF8wMDBfMDAwLHJlbGVhc2UuZ2V0U3RyaW5nKCJzaGEyNTYiKSk7CiAgICAgICAgLy8gVmVyaWZ5IHRoZSBpbmNvbWluZyBBUEsgaGFzIG91ciBwYWNrYWdlIG5hbWUgYW5kIEVYQUNUTFkgdGhlIGN1cnJlbnRseSBpbnN0YWxsZWQgc2lnbmVyLgogICAgICAgIFBhY2thZ2VNYW5hZ2VyIHBtPWMuZ2V0UGFja2FnZU1hbmFnZXIoKTsKICAgICAgICBpbnQgbWFzaz1CdWlsZC5WRVJTSU9OLlNES19JTlQ+PTI4P1BhY2thZ2VNYW5hZ2VyLkdFVF9TSUdOSU5HX0NFUlRJRklDQVRFUzpQYWNrYWdlTWFuYWdlci5HRVRfU0lHTkFUVVJFUzsKICAgICAgICBQYWNrYWdlSW5mbyBpbmNvbWluZz1wbS5nZXRQYWNrYWdlQXJjaGl2ZUluZm8odGFyZ2V0LmdldEFic29sdXRlUGF0aCgpLG1hc2t8UGFja2FnZU1hbmFnZXIuR0VUX01FVEFfREFUQSk7CiAgICAgICAgUGFja2FnZUluZm8gY3VycmVudD1wbS5nZXRQYWNrYWdlSW5mbyhjLmdldFBhY2thZ2VOYW1lKCksbWFzayk7CiAgICAgICAgaWYoaW5jb21pbmc9PW51bGx8fCFjLmdldFBhY2thZ2VOYW1lKCkuZXF1YWxzKGluY29taW5nLnBhY2thZ2VOYW1lKSl0aHJvdyBuZXcgU2VjdXJpdHlFeGNlcHRpb24oIuWuieijheWMheWMheWQjeS4jeWMuemFjSIpOwogICAgICAgIGxvbmcgaW5jb21pbmdWZXJzaW9uPUJ1aWxkLlZFUlNJT04uU0RLX0lOVD49Mjg/aW5jb21pbmcuZ2V0TG9uZ1ZlcnNpb25Db2RlKCk6aW5jb21pbmcudmVyc2lvbkNvZGU7CiAgICAgICAgaWYoaW5jb21pbmdWZXJzaW9uPD1CdWlsZENvbmZpZy5WRVJTSU9OX0NPREV8fGluY29taW5nVmVyc2lvbiE9cmVsZWFzZS5nZXRMb25nKCJ2ZXJzaW9uX2NvZGUiKSkKICAgICAgICAgICAgdGhyb3cgbmV3IFNlY3VyaXR5RXhjZXB0aW9uKCLlronoo4XljIXniYjmnKzlj7fkuI3ljLnphY3miJbkuI3mmK/mlrDniYgiKTsKICAgICAgICBpZihpbmNvbWluZy5hcHBsaWNhdGlvbkluZm89PW51bGx8fGluY29taW5nLmFwcGxpY2F0aW9uSW5mby5tZXRhRGF0YT09bnVsbHx8CiAgICAgICAgICAgICAgICAhcmVsZWFzZS5nZXRTdHJpbmcoImNvcmVfdmVyc2lvbiIpLmVxdWFscyhpbmNvbWluZy5hcHBsaWNhdGlvbkluZm8ubWV0YURhdGEuZ2V0U3RyaW5nKCJjb20uZnByb3h5LkNPUkVfVkVSU0lPTiIpKSkKICAgICAgICAgICAgdGhyb3cgbmV3IFNlY3VyaXR5RXhjZXB0aW9uKCLlronoo4XljIXlhoXmoLjlo7DmmI7kuI7mm7TmlrDmuIXljZXkuI3ljLnphY0iKTsKICAgICAgICBTaWduYXR1cmVbXSBhLGI7CiAgICAgICAgaWYoQnVpbGQuVkVSU0lPTi5TREtfSU5UPj0yOCYmaW5jb21pbmcuc2lnbmluZ0luZm8hPW51bGwmJmN1cnJlbnQuc2lnbmluZ0luZm8hPW51bGwpewogICAgICAgICAgICBhPWluY29taW5nLnNpZ25pbmdJbmZvLmdldEFwa0NvbnRlbnRzU2lnbmVycygpO2I9Y3VycmVudC5zaWduaW5nSW5mby5nZXRBcGtDb250ZW50c1NpZ25lcnMoKTsKICAgICAgICB9ZWxzZXsKICAgICAgICAgICAgLy8gU29tZSBST01zIChub3RhYmx5IE1JVUkvSHlwZXJPUykgcmV0dXJuIG51bGwgc2lnbmluZ0luZm8gZnJvbQogICAgICAgICAgICAvLyBnZXRQYWNrYWdlQXJjaGl2ZUluZm8gd2l0aCBHRVRfU0lHTklOR19DRVJUSUZJQ0FURVMuIEZhbGwgYmFjayB0bwogICAgICAgICAgICAvLyB0aGUgdjEgKEpBUikgc2lnbmF0dXJlcywgd2hpY2ggdGhpcyBBUEsgYWxzbyBjYXJyaWVzLCBhbmQgY29tcGFyZQogICAgICAgICAgICAvLyB0aGUgc2FtZSBjZXJ0aWZpY2F0ZSBieXRlcy4KICAgICAgICAgICAgUGFja2FnZUluZm8gaW5jb21pbmdWMT1wbS5nZXRQYWNrYWdlQXJjaGl2ZUluZm8odGFyZ2V0LmdldEFic29sdXRlUGF0aCgpLFBhY2thZ2VNYW5hZ2VyLkdFVF9TSUdOQVRVUkVTKTsKICAgICAgICAgICAgUGFja2FnZUluZm8gY3VycmVudFYxPXBtLmdldFBhY2thZ2VJbmZvKGMuZ2V0UGFja2FnZU5hbWUoKSxQYWNrYWdlTWFuYWdlci5HRVRfU0lHTkFUVVJFUyk7CiAgICAgICAgICAgIGlmKGluY29taW5nVjE9PW51bGx8fGN1cnJlbnRWMT09bnVsbCl0aHJvdyBuZXcgU2VjdXJpdHlFeGNlcHRpb24oIuaXoOazleivu+WPluWuieijheWMheetvuWQjSIpOwogICAgICAgICAgICBhPWluY29taW5nVjEuc2lnbmF0dXJlcztiPWN1cnJlbnRWMS5zaWduYXR1cmVzOwogICAgICAgIH0KICAgICAgICBpZihhPT1udWxsfHxiPT1udWxsfHxhLmxlbmd0aCE9MXx8Yi5sZW5ndGghPTEKICAgICAgICAgICAgICAgIHx8IU1lc3NhZ2VEaWdlc3QuaXNFcXVhbChhWzBdLnRvQnl0ZUFycmF5KCksYlswXS50b0J5dGVBcnJheSgpKSkKICAgICAgICAgICAgdGhyb3cgbmV3IFNlY3VyaXR5RXhjZXB0aW9uKCLlronoo4XljIXor4HkuabkuI7lvZPliY0gRiDkuI3kuIDoh7QiKTsKICAgICAgICBVcmkgdXJpPUZpbGVQcm92aWRlci5nZXRVcmlGb3JGaWxlKGMsYy5nZXRQYWNrYWdlTmFtZSgpKyIuZmlsZXMiLHRhcmdldCk7CiAgICAgICAgSW50ZW50IGludGVudD1uZXcgSW50ZW50KEludGVudC5BQ1RJT05fVklFVykuc2V0RGF0YUFuZFR5cGUodXJpLCJhcHBsaWNhdGlvbi92bmQuYW5kcm9pZC5wYWNrYWdlLWFyY2hpdmUiKQogICAgICAgICAgICAgICAgLmFkZEZsYWdzKEludGVudC5GTEFHX0dSQU5UX1JFQURfVVJJX1BFUk1JU1NJT058SW50ZW50LkZMQUdfQUNUSVZJVFlfTkVXX1RBU0spOwogICAgICAgIGMuc3RhcnRBY3Rpdml0eShpbnRlbnQpOwogICAgfQogICAgcHJpdmF0ZSBzdGF0aWMgU3RyaW5nIGhhc2goYnl0ZVtdIGIpdGhyb3dzIEV4Y2VwdGlvbnsKICAgICAgICBieXRlW10gZD1NZXNzYWdlRGlnZXN0LmdldEluc3RhbmNlKCJTSEEtMjU2IikuZGlnZXN0KGIpOwogICAgICAgIFN0cmluZ0J1aWxkZXIgcz1uZXcgU3RyaW5nQnVpbGRlcigpO2ZvcihieXRlIHY6ZClzLmFwcGVuZChTdHJpbmcuZm9ybWF0KExvY2FsZS5VUywiJTAyeCIsdiYweGZmKSk7cmV0dXJuIHMudG9TdHJpbmcoKTsKICAgIH0KICAgIHByaXZhdGUgc3RhdGljIFN0cmluZyBzYWZlKEV4Y2VwdGlvbiBlKXtyZXR1cm4gZS5nZXRNZXNzYWdlKCk9PW51bGw/ZS5nZXRDbGFzcygpLmdldFNpbXBsZU5hbWUoKTplLmdldE1lc3NhZ2UoKS5yZXBsYWNlKCdcbicsJyAnKTt9Cn0K
+package com.fproxy.client;
+
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.content.pm.Signature;
+import androidx.core.content.FileProvider;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.security.MessageDigest;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+/** One refresh button runs subscriptions, compatible SRS rules and a stable-only core check.
+ * libbox is packaged as native code; This application updates its bundled core through a NEW APK signed with the
+ * SAME signing certificate; it does not implement native library hot swapping.
+ */
+public final class UpdateManager {
+    public static final String RELEASES="https://api.github.com/repos/SagerNet/sing-box/releases/latest";
+    public static String updateSource(Context c){return c.getSharedPreferences("updates",Context.MODE_PRIVATE).getString("manifest",BuildConfig.APP_UPDATE_MANIFEST);}
+    public static final String[] RULE_NAMES={"geoip-cn.srs","geosite-cn.srs"};
+    public static final String[] RULE_URLS={
+        "https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
+        "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-cn.srs"
+    };
+    private UpdateManager() {}
+    public interface Progress {void step(String info);}
+    public static final class Result {
+        public final List<String> report=new ArrayList<>();
+        public String officialStableVersion=BuildConfig.CORE_VERSION;
+        public JSONObject appRelease;
+        public String asText(){StringBuilder sb=new StringBuilder();for(String s:report)sb.append(s).append('\n');return sb.toString().trim();}
+    }
+    public static Result updateAll(Context context,NodeStore store,Progress p) {
+        Result r=new Result();
+        try {
+            JSONArray subscriptions=store.subscriptions();
+            int ok=0,failed=0;
+            for(int i=0;i<subscriptions.length();i++){
+                JSONObject s=subscriptions.getJSONObject(i);
+                String name=s.optString("name","订阅");p.step("更新订阅："+name);
+                try {
+                    store.replaceSubscription(s.getString("id"),NetFetch.text(s.getString("url"),2_000_000));
+                    ok++;
+                } catch(Exception e){failed++;r.report.add("订阅「"+name+"」更新失败，已保留旧节点："+safe(e));}
+            }
+            r.report.add("订阅：成功 "+ok+"，失败 "+failed);
+        } catch(Exception e){r.report.add("读取订阅失败："+safe(e));}
+        File ruleDir=new File(context.getFilesDir(),"rules");ruleDir.mkdirs();
+        int geoOk=0;
+        for(int i=0;i<RULE_NAMES.length;i++){
+            String name=RULE_NAMES[i];p.step("更新 Geo 规则："+name);
+            try {
+                byte[] body=NetFetch.bytes(RULE_URLS[i],10_000_000);
+                if(body.length<8 || body[0]!='S'||body[1]!='R'||body[2]!='S')
+                    throw new java.io.IOException("规则集签名头不是 SRS");
+                File tmp=new File(ruleDir,name+".tmp");File target=new File(ruleDir,name);
+                try(FileOutputStream out=new FileOutputStream(tmp)) {out.write(body);out.flush();out.getFD().sync();}
+                try {Files.move(tmp.toPath(),target.toPath(),StandardCopyOption.REPLACE_EXISTING,StandardCopyOption.ATOMIC_MOVE);}
+                catch(java.nio.file.AtomicMoveNotSupportedException e){Files.move(tmp.toPath(),target.toPath(),StandardCopyOption.REPLACE_EXISTING);}
+                geoOk++;
+            }catch(Exception e){r.report.add(name+" 更新失败，已保留原文件："+safe(e));}
+        }
+        r.report.add("Geo .srs：成功 "+geoOk+"/"+RULE_NAMES.length);
+        p.step("更新中国大陆应用包名清单");
+        try{int count=AppDirectPolicy.update(context);r.report.add("国内应用清单：已更新 "+count+" 条，重连后应用");}
+        catch(Exception e){r.report.add("国内应用清单更新失败，保留内置/已有规则："+safe(e));}
+        r.report.add("大陆 IP 与应用直连规则在下次连接时生效；浏览器不整应用直连。");
+        p.step("检查 sing-box 官方稳定版");
+        try {
+            String latest=latestOfficialStable();r.officialStableVersion=latest;
+            r.report.add("官方稳定内核：v"+latest+"（当前 v"+BuildConfig.CORE_VERSION+"）");
+        }catch(Exception e){
+            r.report.add("检查内核版本失败："+safe(e));
+            return r;
+        }
+        String source = updateSource(context);
+        if (source.isBlank()) {
+            r.report.add("请在页面底部填写同签名 F 更新清单；当前尚未配置下载来源。");
+        } else {
+            p.step("检查 F 应用更新");
+            try {
+                JSONObject release = new JSONObject(NetFetch.text(source, 80_000));
+                if (canInstallRelease(release, r.officialStableVersion, BuildConfig.CORE_VERSION, BuildConfig.VERSION_CODE)) {
+                    r.appRelease = release;
+                    r.report.add("F 稳定版更新包已就绪，需要用户确认安装");
+                } else {
+                    r.report.add("没有可安装且匹配官方稳定版的 F 更新包");
+                }
+            } catch (Exception e) {
+                r.report.add("检查 F 应用更新失败："+safe(e));
+            }
+        }
+        return r;
+    }
+    static boolean canInstallRelease(JSONObject release, String latestStable, String installedCore,
+                                     int installedVersionCode) throws Exception {
+        String releaseCore = release.getString("core_version");
+        if (!releaseCore.matches("[0-9]+\\.[0-9]+\\.[0-9]+")) {
+            throw new SecurityException("更新包不是正式内核版本");
+        }
+        return compareVersion(releaseCore, installedCore) >= 0
+                && compareVersion(releaseCore, latestStable) <= 0
+                && release.getInt("version_code") > installedVersionCode
+                && release.getString("apk_url").startsWith("https://")
+                && release.getString("sha256").matches("(?i)[a-f0-9]{64}");
+    }
+
+    public static String latestOfficialStable() throws Exception {
+        JSONArray releases=new JSONArray().put(new JSONObject(NetFetch.text(RELEASES,2_000_000)));
+        String latest=null;
+        for(int i=0;i<releases.length();i++){
+            JSONObject release=releases.getJSONObject(i);
+            if(release.optBoolean("draft",true)||release.optBoolean("prerelease",true))continue;
+            String tag=release.optString("tag_name");
+            if(!tag.matches("v[0-9]+\\.[0-9]+\\.[0-9]+"))continue; // no alpha/beta/rc/nightly
+            String version=tag.substring(1);
+            if(latest==null||compareVersion(version,latest)>0)latest=version;
+        }
+        if(latest==null)throw new java.io.IOException("官方版本列表中没有稳定版");
+        return latest;
+    }
+    public static int compareVersion(String a,String b){
+        String[] x=a.split("\\."),y=b.split("\\.");
+        for(int i=0;i<3;i++){int v=Integer.parseInt(x[i]),w=Integer.parseInt(y[i]);if(v!=w)return Integer.compare(v,w);}
+        return 0;
+    }
+    /** Verifies downloaded APK hash and SAME APK signer before invoking Android's installer. */
+    public static void downloadAndInstall(Context c,JSONObject release,Progress p)throws Exception {
+        String address=release.getString("apk_url");
+        if(!address.startsWith("https://"))throw new SecurityException("安装包必须是 HTTPS");
+        p.step("下载新版本 F 安装包");
+        File dir=new File(c.getCacheDir(),"updates");dir.mkdirs();File target=new File(dir,"F-update.apk");
+        NetFetch.downloadTo(address,target,160_000_000,release.getString("sha256"));
+        // Verify the incoming APK has our package name and EXACTLY the currently installed signer.
+        PackageManager pm=c.getPackageManager();
+        int mask=Build.VERSION.SDK_INT>=28?PackageManager.GET_SIGNING_CERTIFICATES:PackageManager.GET_SIGNATURES;
+        PackageInfo incoming=pm.getPackageArchiveInfo(target.getAbsolutePath(),mask|PackageManager.GET_META_DATA);
+        PackageInfo current=pm.getPackageInfo(c.getPackageName(),mask);
+        if(incoming==null||!c.getPackageName().equals(incoming.packageName))throw new SecurityException("安装包包名不匹配");
+        long incomingVersion=Build.VERSION.SDK_INT>=28?incoming.getLongVersionCode():incoming.versionCode;
+        if(incomingVersion<=BuildConfig.VERSION_CODE||incomingVersion!=release.getLong("version_code"))
+            throw new SecurityException("安装包版本号不匹配或不是新版");
+        if(incoming.applicationInfo==null||incoming.applicationInfo.metaData==null||
+                !release.getString("core_version").equals(incoming.applicationInfo.metaData.getString("com.fproxy.CORE_VERSION")))
+            throw new SecurityException("安装包内核声明与更新清单不匹配");
+        Signature[] a,b;
+        if(Build.VERSION.SDK_INT>=28&&incoming.signingInfo!=null&&current.signingInfo!=null){
+            a=incoming.signingInfo.getApkContentsSigners();b=current.signingInfo.getApkContentsSigners();
+        }else{
+            // Some ROMs (notably MIUI/HyperOS) return null signingInfo from
+            // getPackageArchiveInfo with GET_SIGNING_CERTIFICATES. Fall back to
+            // the v1 (JAR) signatures, which this APK also carries, and compare
+            // the same certificate bytes.
+            PackageInfo incomingV1=pm.getPackageArchiveInfo(target.getAbsolutePath(),PackageManager.GET_SIGNATURES);
+            PackageInfo currentV1=pm.getPackageInfo(c.getPackageName(),PackageManager.GET_SIGNATURES);
+            if(incomingV1==null||currentV1==null)throw new SecurityException("无法读取安装包签名");
+            a=incomingV1.signatures;b=currentV1.signatures;
+        }
+        if(a==null||b==null||a.length!=1||b.length!=1
+                ||!MessageDigest.isEqual(a[0].toByteArray(),b[0].toByteArray()))
+            throw new SecurityException("安装包证书与当前 F 不一致");
+        Uri uri=FileProvider.getUriForFile(c,c.getPackageName()+".files",target);
+        Intent intent=new Intent(Intent.ACTION_VIEW).setDataAndType(uri,"application/vnd.android.package-archive")
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_ACTIVITY_NEW_TASK);
+        c.startActivity(intent);
+    }
+    private static String hash(byte[] b)throws Exception{
+        byte[] d=MessageDigest.getInstance("SHA-256").digest(b);
+        StringBuilder s=new StringBuilder();for(byte v:d)s.append(String.format(Locale.US,"%02x",v&0xff));return s.toString();
+    }
+    private static String safe(Exception e){return e.getMessage()==null?e.getClass().getSimpleName():e.getMessage().replace('\n',' ');}
+}
