@@ -13,6 +13,48 @@ public class ConfigTest {
   assertEquals("2001:db8::1",n.getString("server"));assertEquals("p:a",n.getString("password"));
   assertEquals("cubic",n.getString("congestion_control"));assertEquals("h3",n.getJSONObject("tls").getJSONArray("alpn").getString(0));
  }
+ private static final String REALITY_LINK =
+     "vless://00000000-0000-0000-0000-000000000001@example.com:443"
+         + "?security=reality&flow=xtls-rprx-vision&sni=edge.example&pbk=test-public-key&sid=1234";
+
+ @Test public void realityShareLinkEnablesUtlsAndUsesFingerprint() throws Exception {
+  JSONObject tls = NodeParser.fromUri(REALITY_LINK + "&fp=firefox").getJSONObject("tls");
+  assertTrue(tls.getJSONObject("reality").getBoolean("enabled"));
+  assertEquals("test-public-key", tls.getJSONObject("reality").getString("public_key"));
+  assertTrue(tls.getJSONObject("utls").getBoolean("enabled"));
+  assertEquals("firefox", tls.getJSONObject("utls").getString("fingerprint"));
+  JSONObject defaults = NodeParser.fromUri(REALITY_LINK).getJSONObject("tls").getJSONObject("utls");
+  assertTrue(defaults.getBoolean("enabled"));
+  assertEquals("chrome", defaults.getString("fingerprint"));
+ }
+
+ @Test public void legacyRealityNodesAreRepairedForVpnAndProbe() throws Exception {
+  JSONObject node = NodeParser.fromUri(REALITY_LINK);
+  node.getJSONObject("tls").remove("utls");
+  String[] configs = {SingConfig.mainlandSplit(node, "/test/geoip-cn.srs"), SingConfig.probe(node, 12345)};
+  for (String config : configs) {
+   JSONObject utls = outboundTls(config).getJSONObject("utls");
+   assertTrue(utls.getBoolean("enabled"));
+   assertEquals("chrome", utls.getString("fingerprint"));
+  }
+  assertFalse(node.getJSONObject("tls").has("utls"));
+ }
+
+ @Test public void existingRealityFingerprintIsKeptAndPlainTlsIsUntouched() throws Exception {
+  JSONObject node = NodeParser.fromUri(REALITY_LINK + "&fp=firefox");
+  node.getJSONObject("tls").getJSONObject("utls").put("enabled", false);
+  JSONObject utls = outboundTls(SingConfig.global(node)).getJSONObject("utls");
+  assertTrue(utls.getBoolean("enabled"));
+  assertEquals("firefox", utls.getString("fingerprint"));
+
+  JSONObject ordinary = NodeParser.fromUri("vless://00000000-0000-0000-0000-000000000001@example.com:443?security=tls");
+  assertFalse(outboundTls(SingConfig.global(ordinary)).has("utls"));
+ }
+
+ private static JSONObject outboundTls(String config) throws Exception {
+  return new JSONObject(config).getJSONArray("outbounds").getJSONObject(0).getJSONObject("tls");
+ }
+
  @Test public void globalRoutesAndDns()throws Exception{
   JSONObject root=new JSONObject(SingConfig.global(NodeParser.fromUri("hy2://pass@127.0.0.1:443")));
   assertEquals(2,root.getJSONArray("inbounds").getJSONObject(0).getJSONArray("address").length());
@@ -20,6 +62,20 @@ public class ConfigTest {
   assertEquals("F-PROXY",root.getJSONObject("dns").getJSONArray("servers").getJSONObject(0).getString("detour"));
   assertEquals("bootstrap",root.getJSONObject("route").getString("default_domain_resolver"));
  }
+ @Test public void appUpdateAcceptsSameCoreOnlyWithHigherVersionCode() throws Exception {
+  JSONObject release = new JSONObject()
+      .put("core_version", "1.14.4").put("version_code", 8)
+      .put("apk_url", "https://example.com/F-SingBox.apk").put("sha256", "a".repeat(64));
+  assertTrue(UpdateManager.canInstallRelease(release, "1.14.4", "1.14.4", 7));
+  assertFalse(UpdateManager.canInstallRelease(release, "1.14.4", "1.14.4", 8));
+  assertFalse(UpdateManager.canInstallRelease(release, "1.14.5", "1.14.5", 7));
+  release.put("core_version", "1.14.5");
+  assertFalse(UpdateManager.canInstallRelease(release, "1.14.4", "1.14.4", 7));
+  assertTrue(UpdateManager.canInstallRelease(release, "1.14.5", "1.14.4", 7));
+  release.put("sha256", "invalid");
+  assertFalse(UpdateManager.canInstallRelease(release, "1.14.5", "1.14.4", 7));
+ }
+
  @Test public void stableVersionComparison(){assertTrue(UpdateManager.compareVersion("1.14.10","1.14.4")>0);}
  @Test(expected=IllegalArgumentException.class) public void emptyNodeRejected()throws Exception{SingConfig.global(null);}
  @Test public void probeUsesLoopbackProxyWithoutTun()throws Exception{
