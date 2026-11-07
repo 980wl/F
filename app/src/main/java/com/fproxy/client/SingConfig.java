@@ -9,6 +9,12 @@ public final class SingConfig {
     public static String global(JSONObject selected) throws Exception {
         if(selected==null)throw new IllegalArgumentException("请先导入并选择节点");
         JSONObject outbound=new JSONObject(selected.toString()).put("tag","F-PROXY");
+        JSONObject tls = outbound.optJSONObject("tls");
+        JSONObject reality = tls == null ? null : tls.optJSONObject("reality");
+        if (reality != null && tls.optBoolean("enabled") && reality.optBoolean("enabled")) {
+            // Repair nodes saved before the importer emitted the required uTLS settings.
+            NodeParser.enableRealityUtls(tls);
+        }
         JSONObject tun=new JSONObject().put("type","tun").put("tag","F-TUN")
                 .put("address",new JSONArray().put("172.19.0.1/30").put("fdfe:dcba:9876::1/126"))
                 .put("mtu",1400).put("auto_route",true).put("stack","system");
