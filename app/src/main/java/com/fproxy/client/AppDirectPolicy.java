@@ -204,9 +204,7 @@ public class AppDirectPolicy {
             File target = new File(rulesDir, "cn-" + kind + ".txt");
             File tmp = new File(rulesDir, "cn-" + kind + ".tmp");
             try (FileOutputStream out = new FileOutputStream(tmp)) {
-                byte[] bytes = (String.join("
-", set) + "
-").getBytes(StandardCharsets.UTF_8);
+                byte[] bytes = (String.join("\n", set) + "\n").getBytes(StandardCharsets.UTF_8);
                 out.write(bytes);
                 out.getFD().sync();
             }
