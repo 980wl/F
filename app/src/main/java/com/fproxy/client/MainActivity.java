@@ -3,6 +3,7 @@ package com.fproxy.client;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
@@ -1029,7 +1030,7 @@ public class MainActivity extends Activity {
             refreshNodeList();
             readStatesAsync();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
-                    && checkSelfPermission("android.permission.POST_NOTIFICATIONS") != 0) {
+                    && checkSelfPermission("android.permission.POST_NOTIFICATIONS") != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"}, 601);
             }
         } catch (Exception e) {
