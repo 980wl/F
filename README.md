@@ -1,6 +1,8 @@
-# F 0.5.0
+# F 0.5.1
 
 Android 8.0+；ARM32/ARM64；包名 com.fproxy.client；内核 libbox 1.14.4。使用原发布签名，可覆盖安装保留节点和订阅。
+
+0.5.1 修复 VLESS REALITY 分享链接导入缺少 uTLS 的问题。新链接保留 `fp`，已有 REALITY 节点在连接和测速时自动补齐 uTLS，缺省使用 `chrome`。从 0.5.0 更新请先覆盖安装 0.5.1 APK。0.5.1 起可通过更新清单安装应用版本更高且内核相同的更新。
 
 默认已改为：中国大陆 IP 直连、其他 IP 走代理。私有/局域网地址也直连。
 
@@ -54,6 +56,6 @@ Android 测试源码包含原生启动/关闭及路由验证。分应用路由�
    https://github.com/OWNER/REPO/releases/latest/download/f-updates.json
    ```
 
-工作流每天检查两次 SagerNet 的最新稳定版。若发现新版，等待现有 AAR 来源 `singbox-android/libbox` 发布同版本 `libbox.aar`，校验 GitHub 发布资产的 SHA-256，然后重新编译 F。当前基线继续使用已固定的 AAR 校验值。通过单元测试、Lint、签名和 APK 元数据校验后，先上传草稿的两个文件，再发布为 Latest。发现新内核的 Android 绑定不兼容时，构建失败会保留此前发布的版本。
+工作流每天检查两次 SagerNet 的最新稳定版，同时检测仓库里的应用版本是否升版。若发现新内核，等待现有 AAR 来源 `singbox-android/libbox` 发布同版本 `libbox.aar`，校验 GitHub 发布资产的 SHA-256，然后重新编译 F。当前基线继续使用已固定的 AAR 校验值。通过单元测试、Lint、签名和 APK 元数据校验后，先上传草稿的两个文件，再发布为 Latest。发现新内核的 Android 绑定不兼容时，构建失败会保留此前发布的版本。
 
-首次运行可以用当前稳定内核生成初始发布和更新地址。已装同内核的 F 会在后续出现更高稳定内核时提示安装。公开仓库连续 60 天无活动时，GitHub 可能停用定时任务，可在 Actions 页面重新启用。
+首次运行可以用当前稳定内核生成初始发布和更新地址。更新清单同时支持同内核的应用升版和稳定内核升级。公开仓库连续 60 天无活动时，GitHub 可能停用定时任务，可在 Actions 页面重新启用。
