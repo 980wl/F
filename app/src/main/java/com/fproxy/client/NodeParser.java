@@ -84,10 +84,25 @@ public final class NodeParser {
                 tls.put("reality",new JSONObject().put("enabled",true)
                         .put("public_key",q.getOrDefault("pbk",q.getOrDefault("public_key","")))
                         .put("short_id",q.getOrDefault("sid","")));
+                String fingerprint = q.getOrDefault("fp", "").trim();
+                if (!fingerprint.isEmpty()) {
+                    tls.put("utls", new JSONObject().put("fingerprint", fingerprint));
+                }
+                enableRealityUtls(tls);
             }
             out.put("tls",tls);
         }
         return out;
+    }
+
+    static void enableRealityUtls(JSONObject tls) throws Exception {
+        JSONObject utls = tls.optJSONObject("utls");
+        if (utls == null) utls = new JSONObject();
+        utls.put("enabled", true);
+        if (utls.isNull("fingerprint") || utls.optString("fingerprint").isBlank()) {
+            utls.put("fingerprint", "chrome");
+        }
+        tls.put("utls", utls);
     }
 
     private static JSONObject vmess(String input) throws Exception {
