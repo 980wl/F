@@ -79,26 +79,43 @@ public final class UpdateManager {
         p.step("检查 sing-box 官方稳定版");
         try {
             String latest=latestOfficialStable();r.officialStableVersion=latest;
-            if(compareVersion(latest,BuildConfig.CORE_VERSION)>0) {
-                r.report.add("官方稳定内核：v"+latest+"（当前 v"+BuildConfig.CORE_VERSION+"）");
-                if(updateSource(context).isBlank()) {
-                    r.report.add("请在页面底部填写同签名 F 更新清单；当前尚未配置下载来源。");
+            r.report.add("官方稳定内核：v"+latest+"（当前 v"+BuildConfig.CORE_VERSION+"）");
+        }catch(Exception e){
+            r.report.add("检查内核版本失败："+safe(e));
+            return r;
+        }
+        String source = updateSource(context);
+        if (source.isBlank()) {
+            r.report.add("请在页面底部填写同签名 F 更新清单；当前尚未配置下载来源。");
+        } else {
+            p.step("检查 F 应用更新");
+            try {
+                JSONObject release = new JSONObject(NetFetch.text(source, 80_000));
+                if (canInstallRelease(release, r.officialStableVersion, BuildConfig.CORE_VERSION, BuildConfig.VERSION_CODE)) {
+                    r.appRelease = release;
+                    r.report.add("F 稳定版更新包已就绪，需要用户确认安装");
                 } else {
-                    JSONObject release=new JSONObject(NetFetch.text(updateSource(context),80_000));
-                    String releaseCore=release.getString("core_version");
-                    if(!releaseCore.matches("[0-9]+\\.[0-9]+\\.[0-9]+"))throw new SecurityException("更新包不是正式内核版本");
-                    if(compareVersion(releaseCore,BuildConfig.CORE_VERSION)>0
-                            &&compareVersion(releaseCore,latest)<=0
-                            &&release.getInt("version_code")>BuildConfig.VERSION_CODE
-                            &&release.getString("apk_url").startsWith("https://")
-                            &&release.getString("sha256").matches("(?i)[a-f0-9]{64}")) {
-                        r.appRelease=release;r.report.add("F 稳定版更新包已就绪，需要用户确认安装");
-                    } else r.report.add("没有可安装且匹配官方稳定版的 F 更新包");
+                    r.report.add("没有可安装且匹配官方稳定版的 F 更新包");
                 }
-            } else r.report.add("sing-box v"+BuildConfig.CORE_VERSION+"：已是当前可用的官方正式版");
-        }catch(Exception e){r.report.add("检查内核版本失败："+safe(e));}
+            } catch (Exception e) {
+                r.report.add("检查 F 应用更新失败："+safe(e));
+            }
+        }
         return r;
     }
+    static boolean canInstallRelease(JSONObject release, String latestStable, String installedCore,
+                                     int installedVersionCode) throws Exception {
+        String releaseCore = release.getString("core_version");
+        if (!releaseCore.matches("[0-9]+\\.[0-9]+\\.[0-9]+")) {
+            throw new SecurityException("更新包不是正式内核版本");
+        }
+        return compareVersion(releaseCore, installedCore) >= 0
+                && compareVersion(releaseCore, latestStable) <= 0
+                && release.getInt("version_code") > installedVersionCode
+                && release.getString("apk_url").startsWith("https://")
+                && release.getString("sha256").matches("(?i)[a-f0-9]{64}");
+    }
+
     public static String latestOfficialStable() throws Exception {
         JSONArray releases=new JSONArray().put(new JSONObject(NetFetch.text(RELEASES,2_000_000)));
         String latest=null;
