@@ -37,6 +37,8 @@ jobs:
           java-version: '17'
       - uses: android-actions/setup-android@v3
         if: steps.plan.outputs.core != ''
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
       - uses: gradle/actions/setup-gradle@v4
         if: steps.plan.outputs.core != ''
         with:
@@ -48,7 +50,6 @@ jobs:
           LIBBOX_SHA256: ${{ steps.plan.outputs.libbox_sha256 }}
           VERSION_CODE: ${{ steps.plan.outputs.version_code }}
         run: |
-          sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
           chmod +x gradlew
           ./gradlew --no-daemon assembleRelease testDebugUnitTest lintRelease \
             "-PfCoreVersion=$CORE" "-PfLibboxSha256=$LIBBOX_SHA256" \
