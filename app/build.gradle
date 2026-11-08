@@ -81,8 +81,28 @@ def prepareLibbox = tasks.register('prepareLibbox') {
         if (!artifact.exists()) {
             artifact.parentFile.mkdirs()
             def temp = new File(artifact.path + '.tmp')
-            new URL("https://github.com/singbox-android/libbox/releases/download/${coreVersion}/libbox.aar").withInputStream { input ->
-                temp.withOutputStream { output -> output << input }
+            // GitHub release 下载偶发 504（如 2026-11-08 第 15/16 次运行），单次失败不再直接炸掉构建，
+            // 最多重试 5 次、每次递增等待 10/20/30/40 秒；SHA-256 校验不变，内容错了照样失败。
+            def url = "https://github.com/singbox-android/libbox/releases/download/${coreVersion}/libbox.aar"
+            def lastError = null
+            for (int attempt = 1; attempt <= 5; attempt++) {
+                try {
+                    new URL(url).withInputStream { input ->
+                        temp.withOutputStream { output -> output << input }
+                    }
+                    lastError = null
+                    break
+                } catch (IOException e) {
+                    lastError = e
+                    temp.delete()
+                    if (attempt < 5) {
+                        logger.lifecycle("libbox.aar download attempt ${attempt} failed (${e.message}); retrying in ${attempt * 10}s")
+                        Thread.sleep(attempt * 10000L)
+                    }
+                }
+            }
+            if (lastError != null) {
+                throw new GradleException("libbox.aar download failed after 5 attempts: ${lastError.message}", lastError)
             }
             java.nio.file.Files.move(temp.toPath(), artifact.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING)
         }
