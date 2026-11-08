@@ -328,7 +328,7 @@ public class MainActivity extends Activity {
         appTitle.setTypeface(null, Typeface.BOLD);
         titleRow.addView(appTitle);
 
-        TextView subTitle = text("大陆直连 / 境外代理 · 内核 1.14.4 · v0.5.2", 12, MUTED);
+        TextView subTitle = text("大陆直连 / 境外代理 · 内核 " + BuildConfig.CORE_VERSION + " · v" + BuildConfig.VERSION_NAME, 12, MUTED);
         LinearLayout.LayoutParams subParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
         subParams.leftMargin = dp(9f);
         titleRow.addView(subTitle, subParams);

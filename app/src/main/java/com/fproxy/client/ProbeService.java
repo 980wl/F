@@ -16,8 +16,10 @@ import io.nekohasekai.libbox.OverrideOptions;
 import io.nekohasekai.libbox.SystemProxyStatus;
 import io.nekohasekai.libbox.TunOptions;
 import java.io.IOException;
+import java.net.Authenticator;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.net.ServerSocket;
 import java.net.URL;
@@ -55,6 +57,26 @@ public class ProbeService extends Service implements CommandServerHandler {
     private final AtomicInteger completed = new AtomicInteger(0);
     private final Set<HttpsURLConnection> liveRequests =
             Collections.newSetFromMap(new ConcurrentHashMap<>());
+
+    // 测速本地代理鉴权：HttpsURLConnection 不会把手动设的 Proxy-Authorization 头带到 CONNECT
+    // 隧道请求上，代理鉴权只能走 java.net.Authenticator；按端口分发，各并发任务用各的口令。
+    private static final ConcurrentHashMap<Integer, PasswordAuthentication> probeCredentials =
+            new ConcurrentHashMap<>();
+    private static volatile Authenticator previousAuthenticator;
+
+    private static final Authenticator probeAuthenticator = new Authenticator() {
+        @Override
+        protected PasswordAuthentication getPasswordAuthentication() {
+            if (getRequestorType() != RequestorType.PROXY) {
+                return null;
+            }
+            String host = getRequestingHost();
+            if (!"127.0.0.1".equals(host) && !"localhost".equalsIgnoreCase(host)) {
+                return null;
+            }
+            return probeCredentials.get(getRequestingPort());
+        }
+    };
 
     private void close() {
         if (platform != null) {
@@ -148,6 +170,7 @@ public class ProbeService extends Service implements CommandServerHandler {
                 Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", port));
                 HttpsURLConnection conn = (HttpsURLConnection) url.openConnection(proxy);
                 liveRequests.add(conn);
+                probeCredentials.put(port, new PasswordAuthentication(probeUser, probePass.toCharArray()));
                 try {
                     conn.setConnectTimeout(5000);
                     conn.setReadTimeout(5000);
@@ -164,6 +187,7 @@ public class ProbeService extends Service implements CommandServerHandler {
                         throw new IOException("测试地址返回 HTTP " + code + "，未通过 204 校验");
                     }
                 } finally {
+                    probeCredentials.remove(port);
                     liveRequests.remove(conn);
                     conn.disconnect();
                 }
@@ -271,12 +295,20 @@ public class ProbeService extends Service implements CommandServerHandler {
     public void onCreate() {
         super.onCreate();
         CrashDiary.install(this, "测速");
+        Authenticator current = Authenticator.getDefault();
+        if (current != probeAuthenticator) {
+            previousAuthenticator = current;
+            Authenticator.setDefault(probeAuthenticator);
+        }
     }
 
     @Override
     public void onDestroy() {
         destroyed = true;
         stopped = true;
+        if (Authenticator.getDefault() == probeAuthenticator) {
+            Authenticator.setDefault(previousAuthenticator);
+        }
         for (HttpsURLConnection req : liveRequests) {
             try {
                 req.disconnect();
