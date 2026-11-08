@@ -62,7 +62,6 @@ public class ProbeService extends Service implements CommandServerHandler {
     // 隧道请求上，代理鉴权只能走 java.net.Authenticator；按端口分发，各并发任务用各的口令。
     private static final ConcurrentHashMap<Integer, PasswordAuthentication> probeCredentials =
             new ConcurrentHashMap<>();
-    private static volatile Authenticator previousAuthenticator;
 
     private static final Authenticator probeAuthenticator = new Authenticator() {
         @Override
@@ -295,20 +294,14 @@ public class ProbeService extends Service implements CommandServerHandler {
     public void onCreate() {
         super.onCreate();
         CrashDiary.install(this, "测速");
-        Authenticator current = Authenticator.getDefault();
-        if (current != probeAuthenticator) {
-            previousAuthenticator = current;
-            Authenticator.setDefault(probeAuthenticator);
-        }
+        Authenticator.setDefault(probeAuthenticator);
     }
 
     @Override
     public void onDestroy() {
         destroyed = true;
         stopped = true;
-        if (Authenticator.getDefault() == probeAuthenticator) {
-            Authenticator.setDefault(previousAuthenticator);
-        }
+        Authenticator.setDefault(null);
         for (HttpsURLConnection req : liveRequests) {
             try {
                 req.disconnect();
