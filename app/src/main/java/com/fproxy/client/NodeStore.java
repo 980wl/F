@@ -301,6 +301,30 @@ public class NodeStore {
         save();
     }
 
+    public synchronized JSONObject node(String id) throws Exception {
+        JSONArray nodes = data.getJSONArray("nodes");
+        for (int i = 0; i < nodes.length(); i++) {
+            JSONObject item = nodes.getJSONObject(i);
+            if (id.equals(item.optString("id"))) {
+                return new JSONObject(item.toString());
+            }
+        }
+        return null;
+    }
+
+    public synchronized void updateNodeConfig(String id, JSONObject config) throws Exception {
+        JSONArray nodes = data.getJSONArray("nodes");
+        for (int i = 0; i < nodes.length(); i++) {
+            JSONObject item = nodes.getJSONObject(i);
+            if (id.equals(item.optString("id"))) {
+                item.put("config", config);
+                save();
+                return;
+            }
+        }
+        throw new IllegalArgumentException("节点不存在");
+    }
+
     public synchronized String selected() {
         return data.optString("selected", "");
     }

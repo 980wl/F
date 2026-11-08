@@ -1,6 +1,8 @@
-# F 0.5.4
+# F 0.5.5
 
 Android 8.0+；ARM32/ARM64；包名 com.fproxy.client；内核 libbox 1.14.4。使用原发布签名，可覆盖安装保留节点和订阅。
+
+0.5.5 新增节点配置页：每个节点卡片测速按钮上方加“配置”按钮，点进可改备注、服务器、端口、密码/UUID、TLS SNI；hysteria2 节点另有混淆（salamander/gecko）、BBR 档位、上/下行带宽与端口跳跃（server_ports + hop_interval）；页底“保存”写回并返回主页、“返回”丢弃修改。返回主页后节点列表自动刷新。
 
 0.5.4 修复：主界面版本号改为读 BuildConfig.VERSION_NAME，不再写死（0.5.3 误显示 0.5.2）；测速代理鉴权改走 java.net.Authenticator（按端口分发各并发任务的口令），修复 0.5.3 测速报“Failed to authenticate with proxy”。
 

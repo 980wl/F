@@ -115,6 +115,7 @@ public class MainActivity extends Activity {
         TextView delayView;
         TextView endpointView;
         TextView selectHintView;
+        Button configButton;
         Button testButton;
         Button deleteButton;
         TextView errorDetailView;
@@ -160,6 +161,14 @@ public class MainActivity extends Activity {
 
                 holder.endpointView = text("", 11, MUTED);
                 holder.card.addView(holder.endpointView);
+                gap(holder.card, 7);
+
+                LinearLayout configRow = row();
+                TextView configSpacer = text("", 11, MUTED);
+                configRow.addView(configSpacer, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+                holder.configButton = button("配置", false);
+                configRow.addView(holder.configButton, new LinearLayout.LayoutParams(dp(65f), dp(35f)));
+                holder.card.addView(configRow);
                 gap(holder.card, 7);
 
                 LinearLayout actionRow = row();
@@ -231,6 +240,7 @@ public class MainActivity extends Activity {
             holder.selectHintView.setText(isSelected ? "当前选择" : "点击此卡片选择");
             holder.testButton.setEnabled(!testing);
             holder.testButton.setOnClickListener(v -> probeNode(id));
+            holder.configButton.setOnClickListener(v -> openNodeConfig(id));
             holder.deleteButton.setOnClickListener(v -> deleteNode(id, tag));
 
             if (m != null && "failed".equals(statusStr)) {
@@ -610,6 +620,12 @@ public class MainActivity extends Activity {
             r.addView(b, lp);
         }
         parent.addView(r);
+    }
+
+    private void openNodeConfig(String id) {
+        Intent intent = new Intent(this, NodeConfigActivity.class);
+        intent.putExtra("node_id", id);
+        startActivity(intent);
     }
 
     private void probeNode(String nodeId) {
@@ -1048,6 +1064,7 @@ public class MainActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
+        refreshNodeList();
         handler.removeCallbacks(poll);
         handler.post(poll);
     }
