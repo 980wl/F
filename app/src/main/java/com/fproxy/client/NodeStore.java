@@ -301,6 +301,20 @@ public class NodeStore {
         save();
     }
 
+    /**
+     * 从磁盘重读 nodes-v1.json。主页面持有长生命周期的 NodeStore 实例，
+     * 配置页是另一个实例写盘，返回主页时必须重读，否则列表仍显示旧数据，
+     * 且下一次点卡片（select）会把内存里的旧数据写回盘里，丢掉刚才的修改。
+     * 只有解析成功且 schema 校验通过才替换内存数据，读盘失败时保持原数据不动。
+     */
+    public synchronized void reload() throws Exception {
+        JSONObject next = new JSONObject(new String(file.readFully(), StandardCharsets.UTF_8));
+        if (next.optInt("schema") != 1) {
+            throw new IllegalArgumentException("不支持该备份数据库格式");
+        }
+        data = next;
+    }
+
     public synchronized JSONObject node(String id) throws Exception {
         JSONArray nodes = data.getJSONArray("nodes");
         for (int i = 0; i < nodes.length(); i++) {

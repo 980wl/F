@@ -163,21 +163,17 @@ public class MainActivity extends Activity {
                 holder.card.addView(holder.endpointView);
                 gap(holder.card, 7);
 
-                LinearLayout configRow = row();
-                TextView configSpacer = text("", 11, MUTED);
-                configRow.addView(configSpacer, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-                holder.configButton = button("配置", false);
-                configRow.addView(holder.configButton, new LinearLayout.LayoutParams(dp(65f), dp(35f)));
-                holder.card.addView(configRow);
-                gap(holder.card, 7);
-
                 LinearLayout actionRow = row();
                 holder.selectHintView = text("", 11, MUTED);
                 actionRow.addView(holder.selectHintView, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
                 holder.testButton = button("测速", false);
+                holder.configButton = button("配置", false);
                 holder.deleteButton = button("删除", false);
                 actionRow.addView(holder.testButton, new LinearLayout.LayoutParams(dp(65f), dp(35f)));
+                LinearLayout.LayoutParams cfgParams = new LinearLayout.LayoutParams(dp(65f), dp(35f));
+                cfgParams.leftMargin = dp(7f);
+                actionRow.addView(holder.configButton, cfgParams);
                 LinearLayout.LayoutParams delParams = new LinearLayout.LayoutParams(dp(65f), dp(35f));
                 delParams.leftMargin = dp(7f);
                 actionRow.addView(holder.deleteButton, delParams);
@@ -728,6 +724,7 @@ public class MainActivity extends Activity {
 
     private void refreshNodeList() {
         try {
+            store.reload();
             items = store.nodes();
             nodeCount.setText("节点  " + items.length());
             adapter.notifyDataSetChanged();
