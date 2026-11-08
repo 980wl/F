@@ -3,8 +3,9 @@
 import json
 import os
 import re
+import time
 from pathlib import Path
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 API = "https://api.github.com"
@@ -15,13 +16,25 @@ def get_json(url, token=None, allow_missing=False):
     headers = {"User-Agent": "F-SingBox-Release"}
     if token:
         headers["Authorization"] = f"Bearer {token}"
-    try:
-        with urlopen(Request(url, headers=headers), timeout=30) as response:
-            return json.load(response)
-    except HTTPError as error:
-        if allow_missing and error.code == 404:
-            return None
-        raise
+    # GitHub release 下载偶发 502/503/504（如 2026-11-08 第 16 次运行在读已发布清单时 504），
+    # 单次失败不再直接炸掉构建，最多重试 5 次、每次递增等待 10/20/30/40 秒；404 不重试。
+    last_error = None
+    for attempt in range(1, 6):
+        try:
+            with urlopen(Request(url, headers=headers), timeout=30) as response:
+                return json.load(response)
+        except HTTPError as error:
+            if allow_missing and error.code == 404:
+                return None
+            if error.code not in (502, 503, 504):
+                raise
+            last_error = error
+        except URLError as error:
+            last_error = error
+        if attempt < 5:
+            print(f"GET {url} attempt {attempt} failed ({last_error}); retrying in {attempt * 10}s", flush=True)
+            time.sleep(attempt * 10)
+    raise last_error
 
 
 def version(value):
