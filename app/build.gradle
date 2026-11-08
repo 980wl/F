@@ -81,28 +81,48 @@ def prepareLibbox = tasks.register('prepareLibbox') {
         if (!artifact.exists()) {
             artifact.parentFile.mkdirs()
             def temp = new File(artifact.path + '.tmp')
-            // GitHub release 下载偶发 504（如 2026-11-08 第 15/16 次运行），单次失败不再直接炸掉构建，
+            // GitHub release 下载偶发 504（如 2026-11-08 第 15 次运行），单次失败不再直接炸掉构建，
             // 最多重试 5 次、每次递增等待 10/20/30/40 秒；SHA-256 校验不变，内容错了照样失败。
-            def url = "https://github.com/singbox-android/libbox/releases/download/${coreVersion}/libbox.aar"
-            def lastError = null
-            for (int attempt = 1; attempt <= 5; attempt++) {
+            // github.com 下载通道持续 504 时，改走 api.github.com 的资产下载（实测 2026-11-08 可用）。
+            def tryDownload = { String url, Map<String, String> headers, String label ->
+                def lastError = null
+                for (int attempt = 1; attempt <= 5; attempt++) {
+                    try {
+                        def conn = new URL(url).openConnection()
+                        headers.each { name, value -> conn.setRequestProperty(name, value) }
+                        conn.inputStream.withStream { input ->
+                            temp.withOutputStream { output -> output << input }
+                        }
+                        return null
+                    } catch (IOException e) {
+                        lastError = e
+                        temp.delete()
+                        if (attempt < 5) {
+                            logger.lifecycle("${label} attempt ${attempt} failed (${e.message}); retrying in ${attempt * 10}s")
+                            Thread.sleep(attempt * 10000L)
+                        }
+                    }
+                }
+                return lastError
+            }
+            def githubUrl = "https://github.com/singbox-android/libbox/releases/download/${coreVersion}/libbox.aar"
+            def lastError = tryDownload(githubUrl, [:], 'libbox.aar download')
+            if (lastError != null) {
+                def apiUrl = null
                 try {
-                    new URL(url).withInputStream { input ->
-                        temp.withOutputStream { output -> output << input }
-                    }
-                    lastError = null
-                    break
-                } catch (IOException e) {
-                    lastError = e
-                    temp.delete()
-                    if (attempt < 5) {
-                        logger.lifecycle("libbox.aar download attempt ${attempt} failed (${e.message}); retrying in ${attempt * 10}s")
-                        Thread.sleep(attempt * 10000L)
-                    }
+                    def release = new groovy.json.JsonSlurper().parseText(new URL("https://api.github.com/repos/singbox-android/libbox/releases/tags/${coreVersion}").text)
+                    def asset = release.assets?.find { it.name == 'libbox.aar' && it.state == 'uploaded' }
+                    apiUrl = asset ? "https://api.github.com/repos/singbox-android/libbox/releases/assets/${asset.id}" : null
+                } catch (Exception e) {
+                    logger.lifecycle("libbox.aar API asset lookup failed (${e.message}); will use github.com only")
+                }
+                if (apiUrl != null) {
+                    logger.lifecycle('github.com download failed after 5 attempts; trying api.github.com asset download')
+                    lastError = tryDownload(apiUrl, ['Accept': 'application/octet-stream', 'User-Agent': 'F-SingBox-Release'], 'libbox.aar API download')
                 }
             }
             if (lastError != null) {
-                throw new GradleException("libbox.aar download failed after 5 attempts: ${lastError.message}", lastError)
+                throw new GradleException("libbox.aar download failed: ${lastError.message}", lastError)
             }
             java.nio.file.Files.move(temp.toPath(), artifact.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING)
         }

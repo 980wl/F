@@ -12,11 +12,13 @@ API = "https://api.github.com"
 AAR_REPO = "singbox-android/libbox"
 
 
-def get_json(url, token=None, allow_missing=False):
+def get_json(url, token=None, allow_missing=False, accept=None):
     headers = {"User-Agent": "F-SingBox-Release"}
     if token:
         headers["Authorization"] = f"Bearer {token}"
-    # GitHub release 下载偶发 502/503/504（如 2026-11-08 第 16 次运行在读已发布清单时 504），
+    if accept:
+        headers["Accept"] = accept
+    # GitHub release 下载偶发 502/503/504（如 2026-11-08 第 16/17 次运行在读已发布清单时 504），
     # 单次失败不再直接炸掉构建，最多重试 5 次、每次递增等待 10/20/30/40 秒；404 不重试。
     last_error = None
     for attempt in range(1, 6):
@@ -87,7 +89,15 @@ def plan(repo, token, settings):
         if latest_version < version(published_core):
             print("Official latest is older than the published core")
             return {}
-        manifest = get_json(f"https://github.com/{repo}/releases/download/{release_tag}/f-updates.json")
+        # 读已发布清单优先走 API 资产下载，绕开 github.com/releases/download 的 504
+        #（2026-11-08 第 16/17/18 次运行都在这一步被 504 卡住；API 资产下载同日实测可用）。
+        # published 已是 API 返回的 release 对象，自带 assets 列表；找不到资产时回落到旧地址。
+        manifest = None
+        asset = next((a for a in published.get("assets", []) if a["name"] == "f-updates.json"), None)
+        if asset:
+            manifest = get_json(f"{API}/repos/{repo}/releases/assets/{asset['id']}", token, accept="application/octet-stream")
+        if manifest is None:
+            manifest = get_json(f"https://github.com/{repo}/releases/download/{release_tag}/f-updates.json")
         published_app = manifest["version_name"]
         if manifest["core_version"] != published_core or (tag_app and published_app != tag_app):
             raise ValueError("Latest release and update manifest disagree")
