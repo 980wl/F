@@ -20,6 +20,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public final class UpdateManager {
+    // 内置更新清单地址：0.5.7 起写死在这里，界面上不再显示、不用手动填写，
+    // 旧版保存过的地址在首次检查更新时删掉。CI 编译时传入的 BuildConfig.APP_UPDATE_MANIFEST
+    // 是同一地址（见 core-release.yml 的 -PfUpdateManifest），改仓库名时两处一起改。
+    public static final String DEFAULT_UPDATE_MANIFEST =
+            "https://github.com/980wl/F/releases/latest/download/f-updates.json";
     public static final String RELEASES = "https://api.github.com/repos/SagerNet/sing-box/releases/latest";
     public static final String[] RULE_NAMES = new String[]{"geoip-cn.srs", "geosite-cn.srs"};
     public static final String[] RULE_URLS = new String[]{
@@ -242,22 +247,18 @@ public final class UpdateManager {
             result.officialStableVersion = latest;
             result.report.add("官方稳定内核：v" + latest + "（当前 v" + BuildConfig.CORE_VERSION + "）");
             String source = updateSource(context);
-            if (source.trim().isEmpty()) {
-                result.report.add("请在页面底部填写同签名 F 更新清单；当前尚未配置下载来源。");
-            } else {
-                progress.step("检查 F 应用更新");
-                try {
-                    JSONObject manifest = new JSONObject(NetFetch.text(source, 80000));
-                    if (canInstallRelease(manifest, result.officialStableVersion,
-                            BuildConfig.CORE_VERSION, BuildConfig.VERSION_CODE)) {
-                        result.appRelease = manifest;
-                        result.report.add("F 稳定版更新包已就绪，需要用户确认安装");
-                    } else {
-                        result.report.add("没有可安装且匹配官方稳定版的 F 更新包");
-                    }
-                } catch (Exception e) {
-                    result.report.add("检查 F 应用更新失败：" + safe(e));
+            progress.step("检查 F 应用更新");
+            try {
+                JSONObject manifest = new JSONObject(NetFetch.text(source, 80000));
+                if (canInstallRelease(manifest, result.officialStableVersion,
+                        BuildConfig.CORE_VERSION, BuildConfig.VERSION_CODE)) {
+                    result.appRelease = manifest;
+                    result.report.add("F 稳定版更新包已就绪，需要用户确认安装");
+                } else {
+                    result.report.add("没有可安装且匹配官方稳定版的 F 更新包");
                 }
+            } catch (Exception e) {
+                result.report.add("检查 F 应用更新失败：" + safe(e));
             }
         } catch (Exception e) {
             result.report.add("检查内核版本失败：" + safe(e));
@@ -266,7 +267,12 @@ public final class UpdateManager {
     }
 
     public static String updateSource(Context context) {
-        return context.getSharedPreferences("updates", Context.MODE_PRIVATE)
-                .getString("manifest", BuildConfig.APP_UPDATE_MANIFEST);
+        // 0.5.7：删掉旧版保存过的更新地址（比如原来手动填的旧仓库地址），之后只用内置新地址。
+        context.getSharedPreferences("updates", Context.MODE_PRIVATE)
+                .edit().remove("manifest").apply();
+        if (!BuildConfig.APP_UPDATE_MANIFEST.trim().isEmpty()) {
+            return BuildConfig.APP_UPDATE_MANIFEST;
+        }
+        return DEFAULT_UPDATE_MANIFEST;
     }
 }

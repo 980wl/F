@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
@@ -86,7 +85,6 @@ public class MainActivity extends Activity {
     private Button testAll;
     private boolean testing;
     private Button toggle;
-    private EditText updateUrl;
     private JSONObject vpn = new JSONObject();
 
     private final Runnable poll = new Runnable() {
@@ -464,29 +462,6 @@ public class MainActivity extends Activity {
             } else {
                 renderAppPolicy();
             }
-        });
-
-        gap(footer, 16);
-        footer.addView(text("内核更新地址", 15, DARK));
-        footer.addView(text("填入同签名 F 安装包的 HTTPS 更新清单地址。", 11, MUTED));
-        updateUrl = new EditText(this);
-        updateUrl.setTextSize(12f);
-        updateUrl.setSingleLine(true);
-        updateUrl.setHint("https://…/f-updates.json");
-        updateUrl.setText(UpdateManager.updateSource(this));
-        footer.addView(updateUrl);
-
-        Button saveUpdateUrlBtn = button("保存更新地址", false);
-        footer.addView(saveUpdateUrlBtn);
-        saveUpdateUrlBtn.setOnClickListener(v -> {
-            String url = updateUrl.getText().toString().trim();
-            if (!url.isEmpty() && !url.startsWith("https://")) {
-                message("请使用 HTTPS 地址");
-                return;
-            }
-            SharedPreferences prefs = getSharedPreferences("updates", MODE_PRIVATE);
-            prefs.edit().putString("manifest", url).apply();
-            detail.setText("更新地址已保存");
         });
 
         gap(footer, 12);

@@ -42,7 +42,7 @@ Windows 使用 gradlew.bat。首次构建会下载固定版本 libbox AAR 并验
 
 验证结果见 CHECK_REPORT.md。公开应用清单可能有漏项或误分类，请在本机核对；整个识别过程和本机安装列表均在本地处理。
 
-内核更新依旧通过应用内下载、校验和系统确认安装同签名新版 APK 生效；页面底部需配置自己的 HTTPS 更新清单地址。本次未部署更新站点。
+内核更新依旧通过应用内下载、校验和系统确认安装同签名新版 APK 生效；更新清单地址已内置在应用里，不用再手动填写。本次未部署更新站点。
 
 Android 测试源码包含原生启动/关闭及路由验证。分应用路由测试需要安装专用隔离测试包，验证的是 UID 网络归属，不包含实际银行/微信账户登录。
 
@@ -60,7 +60,7 @@ Android 测试源码包含原生启动/关闭及路由验证。分应用路由�
 
    Linux、macOS 可用 `openssl base64 -A -in f-release.jks`，Windows PowerShell 可用 `[Convert]::ToBase64String([IO.File]::ReadAllBytes((Resolve-Path 'f-release.jks').Path))`。签名文件、密码和 Base64 字符串只通过 Actions Secrets 录入。工作流按 0.5.0 的证书指纹校验签名。能改默认分支工作流的人也能改签名步骤，因此请限制仓库写权限。
 3. 打开 **Actions → F stable core release → Run workflow**，选择默认分支执行。首次发布成功后，进入 **Releases** 可看到 `F-SingBox.apk` 和 `f-updates.json`。
-4. 把下方地址中的 `OWNER/REPO` 换成实际 GitHub 仓库名，填到已安装 F 的「内核更新地址」，点击「保存更新地址」。之后使用「更新全部」。工作流生成的 APK 已内置此地址。更新安装由 Android 系统确认。
+4. 更新清单地址已内置在应用里（把下方地址中的 `OWNER/REPO` 换成实际 GitHub 仓库名），打开已安装的 F 直接点「更新全部」即可。更新安装由 Android 系统确认。
 
    ```text
    https://github.com/OWNER/REPO/releases/latest/download/f-updates.json
